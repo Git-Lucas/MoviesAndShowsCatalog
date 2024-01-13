@@ -1,0 +1,6 @@
+@MoviesAndShowsCatalog.User_HostAddress = http://localhost:5062
+
+GET {{MoviesAndShowsCatalog.User_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
