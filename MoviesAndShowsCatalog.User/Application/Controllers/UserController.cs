@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.User.Domain.Data;
 using MoviesAndShowsCatalog.User.Domain.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Services;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
 [ApiController]
-public class UserController(IUserData userData) : ControllerBase
+public class UserController(IUserData userData, ITokenService tokenService) : ControllerBase
 {
     [HttpPost("signUp")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -28,7 +29,7 @@ public class UserController(IUserData userData) : ControllerBase
     }
 
     [HttpPost("signIn")]
-    [ProducesResponseType(typeof(Domain.Models.User), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login(LoginRequest user)
     {
         Domain.Models.User? userFromDatabase = await userData.GetAsync(user);
@@ -38,6 +39,12 @@ public class UserController(IUserData userData) : ControllerBase
             return BadRequest("User not found in database.");
         }
 
-        return Ok(userFromDatabase);
+        LoginResponse loginResponse = new()
+        {
+            Username = userFromDatabase.Username,
+            Token = tokenService.GenerateToken(userFromDatabase)
+        };
+
+        return Ok(loginResponse);
     }
 }

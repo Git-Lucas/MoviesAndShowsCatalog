@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesAndShowsCatalog.User.Domain.Data;
 using MoviesAndShowsCatalog.User.Domain.DTOs;
+using System.Collections.Immutable;
 
 namespace MoviesAndShowsCatalog.User.Infrastructure.Data;
 
