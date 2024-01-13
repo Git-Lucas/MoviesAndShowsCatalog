@@ -1,11 +1,21 @@
-﻿using MoviesAndShowsCatalog.User.Domain.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MoviesAndShowsCatalog.User.Domain.Data;
+using MoviesAndShowsCatalog.User.Domain.DTOs;
 
 namespace MoviesAndShowsCatalog.User.Infrastructure.Data;
 
-public class UserData : IUserData
+public class UserData(DatabaseContext context) : IUserData
 {
-    public Task<int> Create()
+    public async Task<int> CreateAsync(Domain.Models.User user)
     {
-        throw new NotImplementedException();
+        await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
+
+        return user.Id;
+    }
+
+    public Task<Domain.Models.User?> GetAsync(LoginRequest user)
+    {
+        return context.Users.FirstOrDefaultAsync(x => x.Username == user.Username && x.Password == user.Password);
     }
 }
