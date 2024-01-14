@@ -1,20 +1,34 @@
+using Microsoft.EntityFrameworkCore;
+using MoviesAndShowsCatalog.RatingAndReview.Application.RabbitMQ;
+using MoviesAndShowsCatalog.RatingAndReview.Application.Services;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
+using MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<DatabaseContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHostedService<RabbitMQSubscriber>();
+
+builder.Services
+    .AddSingleton<IEventProcessor, EventProcessor>()
+    .AddScoped<IVisualProductionData, VisualProductionData>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+IServiceScope scope = app.Services.CreateScope();
+DatabaseContext databaseContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+await databaseContext.Database.MigrateAsync();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

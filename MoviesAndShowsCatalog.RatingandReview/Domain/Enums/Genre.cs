@@ -1,4 +1,4 @@
-﻿namespace MoviesAndShowsCatalog.MovieAndShow.Domain.Enums;
+﻿namespace MoviesAndShowsCatalog.RatingAndReview.Domain.Enums;
 
 public enum Genre
 {
