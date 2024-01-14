@@ -11,5 +11,6 @@ public enum Genre
     Mystery,
     Romance,
     Documentary,
-    Animation
+    Animation,
+    Adventure
 }
