@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.DTOs;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Enums;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Models;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Util;
@@ -21,23 +22,52 @@ public class VisualProductionsController(IVisualProductionData visualProductionD
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<VisualProduction>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetPagedResponse<VisualProduction>), StatusCodes.Status200OK)]
     [Authorize]
     public async Task<IActionResult> GetAllAsync([FromQuery] int skip = 0, [FromQuery] int take = 5)
     {
-        List<VisualProduction> visualProductions = await visualProductionData.GetAllAsync(skip, take);
         int countVisualProductionInDatabase = await visualProductionData.CountAsync();
-        int currentPage = Pagination.CurrentPage(skip, take);
-        int totalPages = Pagination.TotalPages(countVisualProductionInDatabase, take);
-        
-        return Ok(new
+        GetPagedResponse<VisualProduction> response = new()
         {
-            count = countVisualProductionInDatabase,
-            skip,
-            take,
-            currentPage,
-            totalPages,
-            results = visualProductions
-        });
+            Count = countVisualProductionInDatabase,
+            Skip = skip,
+            Take = take,
+            CurrentPage = Pagination.CurrentPage(skip, take),
+            TotalPages = Pagination.TotalPages(countVisualProductionInDatabase, take),
+            Results = await visualProductionData.GetAllAsync(skip, take)
+    };
+
+        return Ok(response);
+    }
+
+    [HttpGet("{visualProductionId:int}")]
+    [ProducesResponseType(typeof(VisualProduction), StatusCodes.Status200OK)]
+    [Authorize]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] int visualProductionId)
+    {
+        VisualProduction? visualProduction = await visualProductionData.GetByIdAsync(visualProductionId);
+
+        if (visualProduction is null)
+        {
+            return BadRequest($"The {nameof(VisualProduction)} was not found.");
+        }
+
+        return Ok(visualProduction);
+    }
+
+    [HttpDelete("{visualProductionId:int}")]
+    [Authorize(Roles = nameof(Role.Administrator))]
+    public async Task<IActionResult> DeleteAsync([FromRoute] int visualProductionId)
+    {
+        VisualProduction? visualProduction = await visualProductionData.GetByIdAsync(visualProductionId);
+
+        if (visualProduction is null)
+        {
+            return BadRequest($"The {nameof(VisualProduction)} was not found.");
+        }
+
+        await visualProductionData.DeleteAsync(visualProduction);
+
+        return Ok();
     }
 }

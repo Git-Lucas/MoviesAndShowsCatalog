@@ -22,6 +22,17 @@ public class VisualProductionData(DatabaseContext context) : IVisualProductionDa
             .ToListAsync();
     }
 
+    public async Task<VisualProduction?> GetByIdAsync(int visualProductionId)
+    {
+        return await context.VisualProductions.FirstOrDefaultAsync(x => x.Id == visualProductionId);
+    }
+
+    public async Task DeleteAsync(VisualProduction visualProduction)
+    {
+        context.VisualProductions.Remove(visualProduction);
+        await context.SaveChangesAsync();
+    }
+
     public async Task<int> CountAsync()
     {
         return await context.VisualProductions.CountAsync();
