@@ -4,13 +4,14 @@ using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.DTOs;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Enums;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Models;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Util;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Application.Controllers;
 
 [ApiController]
 [Route("visualProductions")]
-public class VisualProductionsController(IVisualProductionData visualProductionData) : ControllerBase
+public class VisualProductionsController(IVisualProductionData visualProductionData, IRabbitMQClient rabbitMQClient) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
@@ -18,6 +19,8 @@ public class VisualProductionsController(IVisualProductionData visualProductionD
     public async Task<IActionResult> CreateAsync([FromBody] VisualProduction visualProduction)
     {
         int idCreatedVisualProduction = await visualProductionData.CreateAsync(visualProduction);
+        rabbitMQClient.SendVisualProduction(visualProduction);
+
         return Ok(idCreatedVisualProduction);
     }
 

@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MoviesAndShowsCatalog.MovieAndShow.Application.RabbitMQ;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Util;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
 using System.Text;
@@ -61,7 +63,8 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 
 builder.Services
     .AddScoped<IVisualProductionData, VisualProductionData>()
-    .AddScoped<ISettings, Settings>();
+    .AddScoped<ISettings, Settings>()
+    .AddScoped<IRabbitMQClient, RabbitMQClient>();
 
 var app = builder.Build();
 
