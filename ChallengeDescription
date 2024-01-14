@@ -11,7 +11,7 @@ Responsible for user registration, authentication, and authorization.
 Include endpoints for user registration, login, and token-based authentication.
 
 - Movie Management Microservice:
-Implement CRUD operations for managing movie data (title, genre, release date, etc.).
+Implement CRUD operations for managing movie data (title, genre, release date, if movie or show, etc.).
 Use proper RESTful API endpoints for each operation.
 Integrate with a database for storing movie data.
 

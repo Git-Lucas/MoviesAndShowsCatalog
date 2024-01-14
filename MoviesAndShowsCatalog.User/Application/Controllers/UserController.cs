@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.User.Domain.Data;
 using MoviesAndShowsCatalog.User.Domain.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Enums;
 using MoviesAndShowsCatalog.User.Domain.Services;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
@@ -10,19 +11,25 @@ public class UserController(IUserData userData, ITokenService tokenService) : Co
 {
     [HttpPost("signUp")]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Register(Domain.Models.User user)
+    public async Task<IActionResult> Register(RegisterRequest registerRequest)
     {
         LoginRequest loginRequest = new()
         {
-            Username = user.Username,
-            Password = user.Password
+            Username = registerRequest.Username,
+            Password = registerRequest.Password
         };
-        Domain.Models.User? userAlreadyExistsInDatabase = await userData.GetAsync(loginRequest);
-
+        Domain.Models.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
         if (userAlreadyExistsInDatabase is not null)
         {
             return BadRequest("The user has already been register.");
         }
+
+        Domain.Models.User user = new()
+        {
+            Username = registerRequest.Username,
+            Password = registerRequest.Password,
+            Role = Role.Commom
+        };
         int createdUserId = await userData.CreateAsync(user);
 
         return Ok(createdUserId);
@@ -32,7 +39,7 @@ public class UserController(IUserData userData, ITokenService tokenService) : Co
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login(LoginRequest user)
     {
-        Domain.Models.User? userFromDatabase = await userData.GetAsync(user);
+        Domain.Models.User? userFromDatabase = await userData.Login(user);
 
         if (userFromDatabase is null)
         {
