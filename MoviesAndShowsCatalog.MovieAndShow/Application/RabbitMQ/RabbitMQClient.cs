@@ -9,13 +9,15 @@ namespace MoviesAndShowsCatalog.MovieAndShow.Application.RabbitMQ;
 public class RabbitMQClient : IRabbitMQClient
 {
     private readonly IConfiguration _configuration;
+    private readonly ILogger<RabbitMQClient> _logger;
     private readonly IConnection _connection;
     private readonly IModel _channel;
     private readonly string _exchangeName = "VisualProductionExchange";
 
-    public RabbitMQClient(IConfiguration configuration)
+    public RabbitMQClient(IConfiguration configuration, ILogger<RabbitMQClient> logger)
     {
         _configuration = configuration;
+        _logger = logger;
 
         _connection = new ConnectionFactory()
         {
@@ -37,6 +39,6 @@ public class RabbitMQClient : IRabbitMQClient
             basicProperties: null,
             body: body);
 
-        Console.WriteLine("Message sent.");
+        _logger.LogInformation($"Message published to the queue. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
     }
 }

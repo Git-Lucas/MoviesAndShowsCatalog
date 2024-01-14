@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Models;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
+namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
 
 public class VisualProductionData(DatabaseContext context) : IVisualProductionData
 {
@@ -12,12 +12,9 @@ public class VisualProductionData(DatabaseContext context) : IVisualProductionDa
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<VisualProduction>> GetAllAsync(int skip, int take)
+    public async Task<List<VisualProduction>> GetAllAsync()
     {
-        return await context.VisualProductions
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
+        return await context.VisualProductions.ToListAsync();
     }
 
     public async Task<VisualProduction?> GetByIdAsync(int visualProductionId)
@@ -29,10 +26,5 @@ public class VisualProductionData(DatabaseContext context) : IVisualProductionDa
     {
         context.VisualProductions.Remove(visualProduction);
         await context.SaveChangesAsync();
-    }
-
-    public async Task<int> CountAsync()
-    {
-        return await context.VisualProductions.CountAsync();
     }
 }

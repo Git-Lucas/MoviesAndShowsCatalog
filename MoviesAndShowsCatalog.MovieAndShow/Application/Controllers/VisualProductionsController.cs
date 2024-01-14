@@ -18,10 +18,10 @@ public class VisualProductionsController(IVisualProductionData visualProductionD
     [Authorize(Roles = nameof(Role.Administrator))]
     public async Task<IActionResult> CreateAsync([FromBody] VisualProduction visualProduction)
     {
-        int idCreatedVisualProduction = await visualProductionData.CreateAsync(visualProduction);
+        await visualProductionData.CreateAsync(visualProduction);
         rabbitMQClient.SendVisualProduction(visualProduction);
 
-        return Ok(idCreatedVisualProduction);
+        return Ok(visualProduction.Id);
     }
 
     [HttpGet]

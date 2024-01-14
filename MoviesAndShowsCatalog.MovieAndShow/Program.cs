@@ -68,6 +68,10 @@ builder.Services
 
 var app = builder.Build();
 
+IServiceScope scope = app.Services.CreateScope();
+DatabaseContext databaseContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+await databaseContext.Database.MigrateAsync();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
