@@ -38,4 +38,3 @@ Secure microservices with token-based authentication.
 Bonus (Optional):
 Implement pagination for listing movies.
 Implement role-based access control for certain API operations (e.g., only administrators can delete movies).
-teste
