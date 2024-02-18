@@ -1,6 +1,8 @@
-﻿namespace MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.DTOs;
+
+namespace MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
 
 public interface IGetRatingsAndReviewsByVisualProductionId
 {
-    Task<IEnumerable<Models.RatingAndReview>> ExecuteAsync(int visualProductionId);
+    Task<GetRatingsAndReviewsResponse> ExecuteAsync(int visualProductionId);
 }

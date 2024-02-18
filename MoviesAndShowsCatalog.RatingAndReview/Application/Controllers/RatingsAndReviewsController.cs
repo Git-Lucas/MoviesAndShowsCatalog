@@ -14,12 +14,12 @@ public class RatingsAndReviewsController(
     [HttpPost]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateAsync(CreateRatingAndReviewDTO createRatingAndReviewDTO)
+    public async Task<IActionResult> CreateAsync(CreateRatingAndReviewRequest createRatingAndReviewDTO)
     {
         try
         {
             await createRatingAndReview.ExecuteAsync(createRatingAndReviewDTO);
-            return Created();
+            return Created(string.Empty, createRatingAndReviewDTO.Id);
         }
         catch (Exception ex)
         {
@@ -28,13 +28,13 @@ public class RatingsAndReviewsController(
     }
 
     [HttpGet("{visualProductionId:int}")]
-    [ProducesResponseType(typeof(IEnumerable<Domain.Models.RatingAndReview>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllByVisualProductionIdAsync([FromRoute] int visualProductionId)
     {
         try
         {
-            IEnumerable<Domain.Models.RatingAndReview> ratingsAndReviews = await getRatingsAndReviewsByVisualProductionId.ExecuteAsync(visualProductionId);
-            return Ok(ratingsAndReviews);
+            GetRatingsAndReviewsResponse ratingAndReviewResponse = await getRatingsAndReviewsByVisualProductionId.ExecuteAsync(visualProductionId);
+            return Ok(ratingAndReviewResponse);
         }
         catch (Exception ex)
         {

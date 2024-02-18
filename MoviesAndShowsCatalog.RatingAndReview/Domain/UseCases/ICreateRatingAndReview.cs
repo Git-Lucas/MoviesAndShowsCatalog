@@ -4,5 +4,5 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
 
 public interface ICreateRatingAndReview
 {
-    Task ExecuteAsync(CreateRatingAndReviewDTO dtoCreateRatingAndReview);
+    Task ExecuteAsync(CreateRatingAndReviewRequest dtoCreateRatingAndReview);
 }

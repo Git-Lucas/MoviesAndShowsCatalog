@@ -11,12 +11,12 @@ public class RatingAndReview
     public RatingAndReview(int id, float rating, string review, int visualProductionId)
     {
         Id = id;
-        Rating = SetRating(rating);
+        Rating = ValidateRating(rating);
         Review = review;
         VisualProductionId = visualProductionId;
     }
 
-    public float SetRating(float rating)
+    public float ValidateRating(float rating)
     {
         if (rating >= 0 && rating <= 5)
         {
