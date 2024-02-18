@@ -75,7 +75,8 @@ builder.Services
     .AddScoped<IRatingAndReviewData, RatingAndReviewData>()
     //UseCases
     .AddScoped<ICreateRatingAndReview, CreateRatingAndReview>()
-    .AddScoped<IGetRatingsAndReviewsByVisualProductionId, GetRatingsAndReviewsByVisualProductionId>();
+    .AddScoped<IGetRatingsAndReviewsByVisualProductionId, GetRatingsAndReviewsByVisualProductionId>()
+    .AddScoped<IGetBestRatedVisualProduction, GetBestRatedVisualProduction>();
 
 var app = builder.Build();
 

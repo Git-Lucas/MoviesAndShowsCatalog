@@ -9,7 +9,8 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Application.Controllers;
 [Route("[controller]")]
 public class RatingsAndReviewsController(
     ICreateRatingAndReview createRatingAndReview,
-    IGetRatingsAndReviewsByVisualProductionId getRatingsAndReviewsByVisualProductionId) : ControllerBase
+    IGetRatingsAndReviewsByVisualProductionId getRatingsAndReviewsByVisualProductionId,
+    IGetBestRatedVisualProduction getBestRatedVisualProduction) : ControllerBase
 {
     [HttpPost]
     [Authorize]
@@ -19,7 +20,7 @@ public class RatingsAndReviewsController(
         try
         {
             await createRatingAndReview.ExecuteAsync(createRatingAndReviewDTO);
-            return Created(string.Empty, createRatingAndReviewDTO.Id);
+            return Created(string.Empty, string.Empty);
         }
         catch (Exception ex)
         {
@@ -42,11 +43,18 @@ public class RatingsAndReviewsController(
         }
     }
 
-    //[HttpDelete("{id:int}")]
-    //[ProducesResponseType(StatusCodes.Status204NoContent)]
-    //public async Task<IActionResult> DeleteAsync([FromRoute] int id)
-    //{
-    //    await ratingAndReviewData.DeleteAsync(id);
-    //    return NoContent();
-    //}
+    [HttpGet("bestRated")]
+    [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
+    public IActionResult GetBestRated()
+    {
+        try
+        {
+            GetRatingsAndReviewsResponse ratingAndReviewResponse = getBestRatedVisualProduction.Execute();
+            return Ok(ratingAndReviewResponse);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
