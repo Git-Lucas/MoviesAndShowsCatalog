@@ -11,6 +11,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 ISettings settings = new Settings();
 byte[] key = Encoding.ASCII.GetBytes(settings.Secret);
 builder.Services.AddAuthentication(x =>

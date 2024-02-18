@@ -7,7 +7,7 @@ using MoviesAndShowsCatalog.User.Domain.Enums;
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
 [ApiController]
-[Route("users")]
+[Route("[controller]")]
 [Authorize(Roles = nameof(Role.Administrator))]
 public class UsersController(IUserData userData) : ControllerBase
 {

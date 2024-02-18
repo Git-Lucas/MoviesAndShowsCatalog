@@ -5,7 +5,7 @@ using MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
 namespace MoviesAndShowsCatalog.RatingAndReview.Application.Controllers;
 
 [ApiController]
-[Route("visualProductions")]
+[Route("[controller]")]
 public class VisualProductionsController(IVisualProductionData visualProductionData) : ControllerBase
 {
     [HttpGet]
