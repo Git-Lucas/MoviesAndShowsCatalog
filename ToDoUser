@@ -1,0 +1,7 @@
+USE CASES:
+- Set movie genre preferences;
+	- Only authenticated;
+- Receive notification when a new visual production released in a genre marked as preferred;
+	- Only authenticated;
+
+- CREATE MIGRATIONS TO SEED DATABASES
