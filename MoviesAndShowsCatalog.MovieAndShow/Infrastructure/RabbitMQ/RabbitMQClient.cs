@@ -4,7 +4,7 @@ using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Application.RabbitMQ;
+namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
 
 public class RabbitMQClient : IRabbitMQClient
 {
@@ -28,17 +28,31 @@ public class RabbitMQClient : IRabbitMQClient
         _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Fanout);
     }
 
-    public void SendVisualProduction(VisualProduction visualProduction)
+    public void CreateVisualProduction(VisualProduction visualProduction)
     {
         string message = JsonSerializer.Serialize(visualProduction);
         byte[] body = Encoding.UTF8.GetBytes(message);
 
         _channel.BasicPublish(
             exchange: _exchangeName,
-            routingKey: "",
+            routingKey: "Create",
             basicProperties: null,
             body: body);
 
         _logger.LogInformation($"Message published to the queue. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
+    }
+
+    public void DeleteVisualProduction(int visualProductionId)
+    {
+        string message = JsonSerializer.Serialize(visualProductionId);
+        byte[] body = Encoding.UTF8.GetBytes(message);
+
+        _channel.BasicPublish(
+            exchange: _exchangeName,
+            routingKey: "Delete",
+            basicProperties: null,
+            body: body);
+
+        _logger.LogInformation($"Message published to the queue. (ID: {visualProductionId} | DateTime: {DateTime.Now})");
     }
 }

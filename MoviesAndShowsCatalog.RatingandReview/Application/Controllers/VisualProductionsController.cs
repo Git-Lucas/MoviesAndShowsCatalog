@@ -15,19 +15,4 @@ public class VisualProductionsController(IVisualProductionData visualProductionD
         List<VisualProduction> visualProductions = await visualProductionData.GetAllAsync();
         return Ok(visualProductions);
     }
-
-    [HttpDelete("{visualProductionId:int}")]
-    public async Task<IActionResult> DeleteAsync([FromRoute] int visualProductionId)
-    {
-        VisualProduction? visualProduction = await visualProductionData.GetByIdAsync(visualProductionId);
-
-        if (visualProduction is null)
-        {
-            return BadRequest($"The {nameof(VisualProduction)} was not found.");
-        }
-
-        await visualProductionData.DeleteAsync(visualProduction);
-
-        return Ok();
-    }
 }

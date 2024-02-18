@@ -7,5 +7,5 @@ public interface IVisualProductionData
     Task CreateAsync(VisualProduction visualProduction);
     Task<List<VisualProduction>> GetAllAsync();
     Task DeleteAsync(VisualProduction visualProduction);
-    Task<VisualProduction?> GetByIdAsync(int visualProductionId);
+    Task<VisualProduction> GetByIdAsync(int visualProductionId);
 }

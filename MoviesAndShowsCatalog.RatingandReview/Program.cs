@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using MoviesAndShowsCatalog.RatingAndReview.Application.RabbitMQ;
-using MoviesAndShowsCatalog.RatingAndReview.Application.Services;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
 using MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;
 
 var builder = WebApplication.CreateBuilder(args);
 

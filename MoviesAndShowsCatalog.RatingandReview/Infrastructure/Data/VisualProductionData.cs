@@ -17,9 +17,10 @@ public class VisualProductionData(DatabaseContext context) : IVisualProductionDa
         return await context.VisualProductions.ToListAsync();
     }
 
-    public async Task<VisualProduction?> GetByIdAsync(int visualProductionId)
+    public async Task<VisualProduction> GetByIdAsync(int visualProductionId)
     {
-        return await context.VisualProductions.FirstOrDefaultAsync(x => x.Id == visualProductionId);
+        return await context.VisualProductions.FirstOrDefaultAsync(x => x.Id == visualProductionId)
+            ?? throw new Exception($"{nameof(VisualProduction)} not found int the database.");
     }
 
     public async Task DeleteAsync(VisualProduction visualProduction)
