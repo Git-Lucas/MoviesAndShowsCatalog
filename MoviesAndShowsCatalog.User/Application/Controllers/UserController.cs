@@ -7,7 +7,7 @@ using MoviesAndShowsCatalog.User.Domain.Services;
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
 [ApiController]
-[Route("user")]
+[Route("[controller]")]
 public class UserController(IUserData userData, ITokenService tokenService) : ControllerBase
 {
     [HttpPost("signUp")]

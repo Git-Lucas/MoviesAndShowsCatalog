@@ -11,7 +11,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-ISettings settings = new Settings();
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+Settings settings = new();
 byte[] key = Encoding.ASCII.GetBytes(settings.Secret);
 builder.Services.AddAuthentication(x =>
 {
@@ -63,7 +65,6 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 
 builder.Services
     .AddScoped<IVisualProductionData, VisualProductionData>()
-    .AddScoped<ISettings, Settings>()
     .AddScoped<IRabbitMQClient, RabbitMQClient>();
 
 var app = builder.Build();
