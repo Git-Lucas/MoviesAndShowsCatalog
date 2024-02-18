@@ -1,7 +1,7 @@
 USE CASES:
-- Get all ratings and reviews;
-	- By ID of visual production;
-	- Allow anonymous;
+- Get all ratings and reviews; DONE
+	- By ID of visual production; DONE
+	- Allow anonymous; DONE
 - Get best-rated visual production;
 	- Allow anonymous;
 - Get worst-rated visual production;

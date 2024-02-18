@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.DTOs;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
 
@@ -8,7 +7,9 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Application.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RatingsAndReviewsController(ICreateRatingAndReview createRatingAndReview, IRatingAndReviewData ratingAndReviewData) : ControllerBase
+public class RatingsAndReviewsController(
+    ICreateRatingAndReview createRatingAndReview,
+    IGetRatingsAndReviewsByVisualProductionId getRatingsAndReviewsByVisualProductionId) : ControllerBase
 {
     [HttpPost]
     [Authorize]
@@ -17,7 +18,7 @@ public class RatingsAndReviewsController(ICreateRatingAndReview createRatingAndR
     {
         try
         {
-            await createRatingAndReview.Execute(createRatingAndReviewDTO);
+            await createRatingAndReview.ExecuteAsync(createRatingAndReviewDTO);
             return Created();
         }
         catch (Exception ex)
@@ -28,17 +29,24 @@ public class RatingsAndReviewsController(ICreateRatingAndReview createRatingAndR
 
     [HttpGet("{visualProductionId:int}")]
     [ProducesResponseType(typeof(IEnumerable<Domain.Models.RatingAndReview>), StatusCodes.Status200OK)]
-    public IActionResult GetAllByVisualProductionIdAsync([FromRoute] int visualProductionId)
+    public async Task<IActionResult> GetAllByVisualProductionIdAsync([FromRoute] int visualProductionId)
     {
-        IEnumerable<Domain.Models.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAllByVisualProductionIdAsync(visualProductionId);
-        return Ok(ratingsAndReviews);
+        try
+        {
+            IEnumerable<Domain.Models.RatingAndReview> ratingsAndReviews = await getRatingsAndReviewsByVisualProductionId.ExecuteAsync(visualProductionId);
+            return Ok(ratingsAndReviews);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-    [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> DeleteAsync([FromRoute] int id)
-    {
-        await ratingAndReviewData.DeleteAsync(id);
-        return NoContent();
-    }
+    //[HttpDelete("{id:int}")]
+    //[ProducesResponseType(StatusCodes.Status204NoContent)]
+    //public async Task<IActionResult> DeleteAsync([FromRoute] int id)
+    //{
+    //    await ratingAndReviewData.DeleteAsync(id);
+    //    return NoContent();
+    //}
 }

@@ -17,8 +17,8 @@ public class RatingAndReviewData(DatabaseContext context) : IRatingAndReviewData
         await context.SaveChangesAsync();
     }
 
-    public IEnumerable<Domain.Models.RatingAndReview> GetAllByVisualProductionIdAsync(int visualProductionId)
+    public IEnumerable<Domain.Models.RatingAndReview> GetAllByVisualProductionId(int visualProductionId)
     {
-        return context.RatingsAndReviews;
+        return context.RatingsAndReviews.Where(x => x.VisualProductionId == visualProductionId);
     }
 }

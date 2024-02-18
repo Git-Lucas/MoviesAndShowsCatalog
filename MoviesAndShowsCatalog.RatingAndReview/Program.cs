@@ -70,9 +70,12 @@ builder.Services.AddHostedService<RabbitMQSubscriber>();
 
 builder.Services
     .AddSingleton<IEventProcessor, EventProcessor>()
+    //Repositories
     .AddScoped<IVisualProductionData, VisualProductionData>()
     .AddScoped<IRatingAndReviewData, RatingAndReviewData>()
-    .AddScoped<ICreateRatingAndReview, CreateRatingAndReview>();
+    //UseCases
+    .AddScoped<ICreateRatingAndReview, CreateRatingAndReview>()
+    .AddScoped<IGetRatingsAndReviewsByVisualProductionId, GetRatingsAndReviewsByVisualProductionId>();
 
 var app = builder.Build();
 

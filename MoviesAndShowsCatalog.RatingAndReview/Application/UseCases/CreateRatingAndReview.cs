@@ -6,7 +6,7 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Application.UseCases;
 
 public class CreateRatingAndReview(IRatingAndReviewData ratingAndReviewData, IVisualProductionData visualProductionData) : ICreateRatingAndReview
 {
-    public async Task Execute(CreateRatingAndReviewDTO dtoCreateRatingAndReview)
+    public async Task ExecuteAsync(CreateRatingAndReviewDTO dtoCreateRatingAndReview)
     {
         await visualProductionData.GetByIdAsync(dtoCreateRatingAndReview.VisualProductionId);
 
