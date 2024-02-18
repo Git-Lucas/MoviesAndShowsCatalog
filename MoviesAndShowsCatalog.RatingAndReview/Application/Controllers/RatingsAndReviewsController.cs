@@ -10,7 +10,8 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Application.Controllers;
 public class RatingsAndReviewsController(
     ICreateRatingAndReview createRatingAndReview,
     IGetRatingsAndReviewsByVisualProductionId getRatingsAndReviewsByVisualProductionId,
-    IGetBestRatedVisualProduction getBestRatedVisualProduction) : ControllerBase
+    IGetBestRatedVisualProduction getBestRatedVisualProduction,
+    IGetWorstRatedVisualProduction getWorstRatedVisualProduction) : ControllerBase
 {
     [HttpPost]
     [Authorize]
@@ -49,8 +50,23 @@ public class RatingsAndReviewsController(
     {
         try
         {
-            GetRatingsAndReviewsResponse ratingAndReviewResponse = getBestRatedVisualProduction.Execute();
-            return Ok(ratingAndReviewResponse);
+            GetRatingsAndReviewsResponse bestRatedVisualProduction = getBestRatedVisualProduction.Execute();
+            return Ok(bestRatedVisualProduction);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("worstRated")]
+    [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
+    public IActionResult GetWorstRated()
+    {
+        try
+        {
+            GetRatingsAndReviewsResponse worstRatedVisualProduction = getWorstRatedVisualProduction.Execute();
+            return Ok(worstRatedVisualProduction);
         }
         catch (Exception ex)
         {
