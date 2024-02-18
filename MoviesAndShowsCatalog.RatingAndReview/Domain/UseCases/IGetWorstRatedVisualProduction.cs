@@ -2,7 +2,7 @@
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
 
-public interface ICreateRatingAndReview
+public interface IGetWorstRatedVisualProduction
 {
-    Task ExecuteAsync(CreateRatingAndReviewRequest dtoCreateRatingAndReview);
+    GetRatingsAndReviewsResponse Execute();
 }

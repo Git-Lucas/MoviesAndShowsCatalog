@@ -8,7 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FC617BD2-2F1B-47D5-814B-624F209F61A1}"
 	ProjectSection(SolutionItems) = preProject
 		ChallengeDescription = ChallengeDescription
-		ToDo_RatingAndReview = ToDo_RatingAndReview
+		ToDoUser = ToDoUser
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesAndShowsCatalog.MovieAndShow", "MoviesAndShowsCatalog.MovieAndShow\MoviesAndShowsCatalog.MovieAndShow.csproj", "{7A693BA8-5432-4C80-ACC9-5FC6EB10F087}"

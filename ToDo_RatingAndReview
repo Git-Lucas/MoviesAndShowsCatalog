@@ -1,8 +1,0 @@
-USE CASES:
-- Get all ratings and reviews;
-	- By ID of visual production;
-	- Allow anonymous;
-- Get best-rated visual production;
-	- Allow anonymous;
-- Get worst-rated visual production;
-	- Allow anonymous;

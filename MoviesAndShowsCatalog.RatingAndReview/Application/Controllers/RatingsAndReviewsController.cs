@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.DTOs;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
 
@@ -8,17 +7,21 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Application.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RatingsAndReviewsController(ICreateRatingAndReview createRatingAndReview, IRatingAndReviewData ratingAndReviewData) : ControllerBase
+public class RatingsAndReviewsController(
+    ICreateRatingAndReview createRatingAndReview,
+    IGetRatingsAndReviewsByVisualProductionId getRatingsAndReviewsByVisualProductionId,
+    IGetBestRatedVisualProduction getBestRatedVisualProduction,
+    IGetWorstRatedVisualProduction getWorstRatedVisualProduction) : ControllerBase
 {
     [HttpPost]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateAsync(CreateRatingAndReviewDTO createRatingAndReviewDTO)
+    public async Task<IActionResult> CreateAsync(CreateRatingAndReviewRequest createRatingAndReviewDTO)
     {
         try
         {
-            await createRatingAndReview.Execute(createRatingAndReviewDTO);
-            return Created();
+            await createRatingAndReview.ExecuteAsync(createRatingAndReviewDTO);
+            return Created(string.Empty, string.Empty);
         }
         catch (Exception ex)
         {
@@ -27,18 +30,47 @@ public class RatingsAndReviewsController(ICreateRatingAndReview createRatingAndR
     }
 
     [HttpGet("{visualProductionId:int}")]
-    [ProducesResponseType(typeof(IEnumerable<Domain.Models.RatingAndReview>), StatusCodes.Status200OK)]
-    public IActionResult GetAllByVisualProductionIdAsync([FromRoute] int visualProductionId)
+    [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllByVisualProductionIdAsync([FromRoute] int visualProductionId)
     {
-        IEnumerable<Domain.Models.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAllByVisualProductionIdAsync(visualProductionId);
-        return Ok(ratingsAndReviews);
+        try
+        {
+            GetRatingsAndReviewsResponse ratingAndReviewResponse = await getRatingsAndReviewsByVisualProductionId.ExecuteAsync(visualProductionId);
+            return Ok(ratingAndReviewResponse);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
-    [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> DeleteAsync([FromRoute] int id)
+    [HttpGet("bestRated")]
+    [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
+    public IActionResult GetBestRated()
     {
-        await ratingAndReviewData.DeleteAsync(id);
-        return NoContent();
+        try
+        {
+            GetRatingsAndReviewsResponse bestRatedVisualProduction = getBestRatedVisualProduction.Execute();
+            return Ok(bestRatedVisualProduction);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("worstRated")]
+    [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
+    public IActionResult GetWorstRated()
+    {
+        try
+        {
+            GetRatingsAndReviewsResponse worstRatedVisualProduction = getWorstRatedVisualProduction.Execute();
+            return Ok(worstRatedVisualProduction);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

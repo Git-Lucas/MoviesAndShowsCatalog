@@ -10,14 +10,12 @@ public class RatingAndReviewData(DatabaseContext context) : IRatingAndReviewData
         await context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public IEnumerable<Domain.Models.RatingAndReview> GetAllByVisualProductionId(int visualProductionId)
     {
-        Domain.Models.RatingAndReview ratingAndReviewFromDatabase = context.RatingsAndReviews.FirstOrDefault(x => x.Id == id)!;
-        context.RatingsAndReviews.Remove(ratingAndReviewFromDatabase);
-        await context.SaveChangesAsync();
+        return context.RatingsAndReviews.Where(x => x.VisualProductionId == visualProductionId);
     }
 
-    public IEnumerable<Domain.Models.RatingAndReview> GetAllByVisualProductionIdAsync(int visualProductionId)
+    public IEnumerable<Domain.Models.RatingAndReview> GetAll()
     {
         return context.RatingsAndReviews;
     }
