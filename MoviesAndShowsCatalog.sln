@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesAndShowsCatalog.MovieAndShow", "MoviesAndShowsCatalog.MovieAndShow\MoviesAndShowsCatalog.MovieAndShow.csproj", "{7A693BA8-5432-4C80-ACC9-5FC6EB10F087}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesAndShowsCatalog.RatingAndReview", "MoviesAndShowsCatalog.RatingandReview\MoviesAndShowsCatalog.RatingAndReview.csproj", "{56347A1C-B767-456E-BF3F-DF79C72C89ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesAndShowsCatalog.RatingAndReview", "MoviesAndShowsCatalog.RatingAndReview\MoviesAndShowsCatalog.RatingAndReview.csproj", "{6BD5DC2A-3593-4A73-A721-6318712E191F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{7A693BA8-5432-4C80-ACC9-5FC6EB10F087}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A693BA8-5432-4C80-ACC9-5FC6EB10F087}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A693BA8-5432-4C80-ACC9-5FC6EB10F087}.Release|Any CPU.Build.0 = Release|Any CPU
-		{56347A1C-B767-456E-BF3F-DF79C72C89ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56347A1C-B767-456E-BF3F-DF79C72C89ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56347A1C-B767-456E-BF3F-DF79C72C89ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56347A1C-B767-456E-BF3F-DF79C72C89ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BD5DC2A-3593-4A73-A721-6318712E191F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BD5DC2A-3593-4A73-A721-6318712E191F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BD5DC2A-3593-4A73-A721-6318712E191F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BD5DC2A-3593-4A73-A721-6318712E191F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
