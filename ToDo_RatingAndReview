@@ -1,0 +1,12 @@
+USE CASES:
+- Create a rating and review;
+	- By ID of visual production;
+	- Rating between 1 and 5;
+	- To authenticated user;
+- Get all ratings and reviews;
+	- By ID of visual production;
+	- Allow anonymous;
+- Get best-rated visual production;
+	- Allow anonymous;
+- Get worst-rated visual production;
+	- Allow anonymous;

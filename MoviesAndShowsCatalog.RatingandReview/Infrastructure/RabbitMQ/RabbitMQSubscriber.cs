@@ -3,7 +3,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Application.Services;
+namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;
 
 public class RabbitMQSubscriber : BackgroundService
 {
@@ -24,27 +24,31 @@ public class RabbitMQSubscriber : BackgroundService
             HostName = _configuration["RabbitMQ:Host"],
             Port = int.Parse(_configuration["RabbitMQ:Port"]!)
         }.CreateConnection();
-        
+
         _channel = _connection.CreateModel();
         _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Fanout);
         _queueName = _channel.QueueDeclare().QueueName;
-        
+
         _channel.QueueBind(
             queue: _queueName,
             exchange: _exchangeName,
-            routingKey: "");
+            routingKey: "Create");
+        _channel.QueueBind(
+            queue: _queueName,
+            exchange: _exchangeName,
+            routingKey: "Delete");
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         EventingBasicConsumer consumer = new(_channel);
 
-        consumer.Received += async (ModuleHandle, ea) =>
+        consumer.Received += (ModuleHandle, ea) =>
         {
             byte[] body = ea.Body.ToArray();
             string message = Encoding.UTF8.GetString(body);
 
-            await _eventProcessor.ProcessAsync(message);
+            _eventProcessor.ProcessAsync(ea.RoutingKey, message);
         };
 
         _channel.BasicConsume(

@@ -19,7 +19,7 @@ public class VisualProductionsController(IVisualProductionData visualProductionD
     public async Task<IActionResult> CreateAsync([FromBody] VisualProduction visualProduction)
     {
         await visualProductionData.CreateAsync(visualProduction);
-        rabbitMQClient.SendVisualProduction(visualProduction);
+        rabbitMQClient.CreateVisualProduction(visualProduction);
 
         return Ok(visualProduction.Id);
     }
@@ -70,6 +70,7 @@ public class VisualProductionsController(IVisualProductionData visualProductionD
         }
 
         await visualProductionData.DeleteAsync(visualProduction);
+        rabbitMQClient.DeleteVisualProduction(visualProductionId);
 
         return Ok();
     }
