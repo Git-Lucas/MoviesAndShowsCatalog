@@ -26,11 +26,11 @@ public class RatingsAndReviewsController(ICreateRatingAndReview createRatingAndR
         }
     }
 
-    [HttpGet]
+    [HttpGet("{visualProductionId:int}")]
     [ProducesResponseType(typeof(IEnumerable<Domain.Models.RatingAndReview>), StatusCodes.Status200OK)]
-    public IActionResult GetAllAsync()
+    public IActionResult GetAllByVisualProductionIdAsync([FromRoute] int visualProductionId)
     {
-        IEnumerable<Domain.Models.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAllAsync();
+        IEnumerable<Domain.Models.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAllByVisualProductionIdAsync(visualProductionId);
         return Ok(ratingsAndReviews);
     }
 
