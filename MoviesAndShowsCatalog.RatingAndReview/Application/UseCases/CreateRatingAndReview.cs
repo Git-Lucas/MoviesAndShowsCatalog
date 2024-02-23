@@ -11,9 +11,9 @@ public class CreateRatingAndReview(IRatingAndReviewData ratingAndReviewData, IVi
         await visualProductionData.GetByIdAsync(dtoCreateRatingAndReview.VisualProductionId);
 
         Domain.Models.RatingAndReview ratingAndReview = new(
-            dtoCreateRatingAndReview.Id, 
-            dtoCreateRatingAndReview.Rating, 
-            dtoCreateRatingAndReview.Review, 
+            dtoCreateRatingAndReview.Id,
+            dtoCreateRatingAndReview.Rating,
+            dtoCreateRatingAndReview.Review,
             dtoCreateRatingAndReview.VisualProductionId);
 
         await ratingAndReviewData.CreateAsync(ratingAndReview);

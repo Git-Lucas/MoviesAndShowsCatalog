@@ -43,7 +43,7 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Migrations
 
                     b.HasIndex("VisualProductionId");
 
-                    b.ToTable("RatingsAndReviews");
+                    b.ToTable("RatingsAndReviews", (string)null);
                 });
 
             modelBuilder.Entity("MoviesAndShowsCatalog.RatingAndReview.Domain.Models.VisualProduction", b =>
@@ -66,7 +66,7 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VisualProductions");
+                    b.ToTable("VisualProductions", (string)null);
                 });
 
             modelBuilder.Entity("MoviesAndShowsCatalog.RatingAndReview.Domain.Models.RatingAndReview", b =>
