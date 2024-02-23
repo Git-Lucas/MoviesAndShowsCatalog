@@ -22,7 +22,7 @@ public record GetRatingsAndReviewsResponse
             result.Add(new RatingAndReviewResponse()
             {
                 Id = ratingAndReview.Id,
-                Rating = ratingAndReview.Rating,
+                Rating = ratingAndReview.Rating.Value,
                 Review = ratingAndReview.Review
             });
         }
