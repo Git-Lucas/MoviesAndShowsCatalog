@@ -11,7 +11,7 @@ namespace MoviesAndShowsCatalog.User.Application.Controllers;
 public class UserController(IUserData userData, ITokenService tokenService) : ControllerBase
 {
     [HttpPost("signUp")]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     public async Task<IActionResult> Register(RegisterRequest registerRequest)
     {
         LoginRequest loginRequest = new()
@@ -25,15 +25,10 @@ public class UserController(IUserData userData, ITokenService tokenService) : Co
             return BadRequest("The user has already been register.");
         }
 
-        Domain.Models.User user = new()
-        {
-            Username = registerRequest.Username,
-            Password = registerRequest.Password,
-            Role = Role.Commom
-        };
+        Domain.Models.User user = new(registerRequest.Username, registerRequest.Password, Role.Commom);
         int createdUserId = await userData.CreateAsync(user);
 
-        return Ok(createdUserId);
+        return Created(string.Empty, createdUserId);
     }
 
     [HttpPost("signIn")]
