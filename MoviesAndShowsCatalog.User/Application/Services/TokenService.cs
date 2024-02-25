@@ -17,6 +17,7 @@ public class TokenService(ISettings settings) : ITokenService
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
+                new("userId", user.Id.ToString()),
                 new(ClaimTypes.Name, user.Username.ToString()),
                 new(ClaimTypes.Role, user.Role.ToString()),
             }),

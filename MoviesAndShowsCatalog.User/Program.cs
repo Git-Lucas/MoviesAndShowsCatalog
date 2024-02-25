@@ -72,7 +72,8 @@ builder.Services
     .AddScoped<ISettings, Settings>()
     .AddScoped<ITokenService, TokenService>()
     .AddScoped<ISetGenrePreferences, SetGenrePreferences>()
-    .AddScoped<IGetGenrePreferences, GetGenrePreferences>();
+    .AddScoped<IGetGenrePreferences, GetGenrePreferences>()
+    .AddScoped<IValidateUserIdentity, ValidateUserIdentity>();
 
 var app = builder.Build();
 

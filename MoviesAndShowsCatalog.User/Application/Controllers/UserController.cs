@@ -7,16 +7,18 @@ using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.DTOs;
 using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
 using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
 using MoviesAndShowsCatalog.User.Domain.UseCases.SignUp.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Util;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class UserController(
-    IUserData userData, 
+    IUserData userData,
     ITokenService tokenService,
     ISetGenrePreferences setGenrePreferences,
-    IGetGenrePreferences getGenrePreferences) : ControllerBase
+    IGetGenrePreferences getGenrePreferences,
+    IValidateUserIdentity validateUserIdentity) : ControllerBase
 {
     [HttpPost("signUp")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
@@ -65,6 +67,18 @@ public class UserController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> SetGenrePreferences([FromBody] SetGenrePreferencesRequest setGenrePreferencesRequest)
     {
+        try
+        {
+            string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
+            string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+            validateUserIdentity.ExecuteComparingWithToken(bearerToken, setGenrePreferencesRequest.UserId);
+        }
+        catch (Exception)
+        {
+            return Unauthorized();
+        }
+
         await setGenrePreferences.ExecuteAsync(setGenrePreferencesRequest);
         return NoContent();
     }
@@ -74,6 +88,18 @@ public class UserController(
     [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGenrePreferences([FromRoute] int userId)
     {
+        try
+        {
+            string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
+            string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+            validateUserIdentity.ExecuteComparingWithToken(bearerToken, userId);
+        }
+        catch (Exception)
+        {
+            return Unauthorized();
+        }
+
         string[] genrePreferencesByUserId = await getGenrePreferences.ExecuteAsync(userId);
         return Ok(genrePreferencesByUserId);
     }
