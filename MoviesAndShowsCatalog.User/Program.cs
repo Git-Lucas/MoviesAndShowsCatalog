@@ -71,7 +71,8 @@ builder.Services
     .AddScoped<IUserData, UserData>()
     .AddScoped<ISettings, Settings>()
     .AddScoped<ITokenService, TokenService>()
-    .AddScoped<ISetGenrePreferences, SetGenrePreferences>();
+    .AddScoped<ISetGenrePreferences, SetGenrePreferences>()
+    .AddScoped<IGetGenrePreferences, GetGenrePreferences>();
 
 var app = builder.Build();
 

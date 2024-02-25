@@ -15,7 +15,8 @@ namespace MoviesAndShowsCatalog.User.Application.Controllers;
 public class UserController(
     IUserData userData, 
     ITokenService tokenService,
-    ISetGenrePreferences setGenrePreferences) : ControllerBase
+    ISetGenrePreferences setGenrePreferences,
+    IGetGenrePreferences getGenrePreferences) : ControllerBase
 {
     [HttpPost("signUp")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
@@ -66,5 +67,14 @@ public class UserController(
     {
         await setGenrePreferences.ExecuteAsync(setGenrePreferencesRequest);
         return NoContent();
+    }
+
+    [HttpGet("genrePreferences/{userId:int}")]
+    [Authorize]
+    [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGenrePreferences([FromRoute] int userId)
+    {
+        string[] genrePreferencesByUserId = await getGenrePreferences.ExecuteAsync(userId);
+        return Ok(genrePreferencesByUserId);
     }
 }
