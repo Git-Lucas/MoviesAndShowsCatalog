@@ -1,6 +1,6 @@
-﻿namespace MoviesAndShowsCatalog.User.Domain.DTOs;
+﻿namespace MoviesAndShowsCatalog.User.Domain.UseCases.SignUp.DTOs;
 
-public record LoginRequest
+public class SignUpRequest
 {
     public required string Username { get; set; }
     public required string Password { get; set; }

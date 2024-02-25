@@ -1,20 +1,30 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.User.Domain.Data;
-using MoviesAndShowsCatalog.User.Domain.DTOs;
 using MoviesAndShowsCatalog.User.Domain.Enums;
 using MoviesAndShowsCatalog.User.Domain.Services;
+using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.DTOs;
+using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
+using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
+using MoviesAndShowsCatalog.User.Domain.UseCases.SignUp.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Util;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(IUserData userData, ITokenService tokenService) : ControllerBase
+public class UserController(
+    IUserData userData,
+    ITokenService tokenService,
+    ISetGenrePreferences setGenrePreferences,
+    IGetGenrePreferences getGenrePreferences,
+    IValidateUserIdentity validateUserIdentity) : ControllerBase
 {
     [HttpPost("signUp")]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Register(RegisterRequest registerRequest)
+    [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
+    public async Task<IActionResult> SignUp(SignUpRequest registerRequest)
     {
-        LoginRequest loginRequest = new()
+        SignInRequest loginRequest = new()
         {
             Username = registerRequest.Username,
             Password = registerRequest.Password
@@ -25,20 +35,15 @@ public class UserController(IUserData userData, ITokenService tokenService) : Co
             return BadRequest("The user has already been register.");
         }
 
-        Domain.Models.User user = new()
-        {
-            Username = registerRequest.Username,
-            Password = registerRequest.Password,
-            Role = Role.Commom
-        };
+        Domain.Models.User user = new(registerRequest.Username, registerRequest.Password, Role.Commom);
         int createdUserId = await userData.CreateAsync(user);
 
-        return Ok(createdUserId);
+        return Created(string.Empty, createdUserId);
     }
 
     [HttpPost("signIn")]
-    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Login(LoginRequest user)
+    [ProducesResponseType(typeof(SignInResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SignIn(SignInRequest user)
     {
         Domain.Models.User? userFromDatabase = await userData.Login(user);
 
@@ -47,12 +52,55 @@ public class UserController(IUserData userData, ITokenService tokenService) : Co
             return BadRequest("User not found in database.");
         }
 
-        LoginResponse loginResponse = new()
+        SignInResponse loginResponse = new()
         {
+            Id = userFromDatabase.Id,
             Username = userFromDatabase.Username,
             Token = tokenService.GenerateToken(userFromDatabase)
         };
 
         return Ok(loginResponse);
+    }
+
+    [HttpPost("genrePreferences")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> SetGenrePreferences([FromBody] SetGenrePreferencesRequest setGenrePreferencesRequest)
+    {
+        try
+        {
+            string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
+            string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+            validateUserIdentity.ExecuteComparingWithToken(bearerToken, setGenrePreferencesRequest.UserId);
+        }
+        catch (Exception)
+        {
+            return Unauthorized();
+        }
+
+        await setGenrePreferences.ExecuteAsync(setGenrePreferencesRequest);
+        return NoContent();
+    }
+
+    [HttpGet("genrePreferences/{userId:int}")]
+    [Authorize]
+    [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetGenrePreferences([FromRoute] int userId)
+    {
+        try
+        {
+            string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
+            string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+            validateUserIdentity.ExecuteComparingWithToken(bearerToken, userId);
+        }
+        catch (Exception)
+        {
+            return Unauthorized();
+        }
+
+        string[] genrePreferencesByUserId = await getGenrePreferences.ExecuteAsync(userId);
+        return Ok(genrePreferencesByUserId);
     }
 }
