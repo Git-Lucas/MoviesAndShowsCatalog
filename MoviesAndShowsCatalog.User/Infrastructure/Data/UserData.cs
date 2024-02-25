@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesAndShowsCatalog.User.Domain.Data;
-using MoviesAndShowsCatalog.User.Domain.DTOs;
+using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
 
 namespace MoviesAndShowsCatalog.User.Infrastructure.Data;
 
@@ -14,9 +14,15 @@ public class UserData(DatabaseContext context) : IUserData
         return user.Id;
     }
 
-    public async Task<List<Domain.Models.User>> GetAllAsync()
+    public async Task<IEnumerable<Domain.Models.User>> GetAllAsync()
     {
         return await context.Users.ToListAsync();
+    }
+
+    public async Task<Domain.Models.User> GetByIdAsync(int userId)
+    {
+        return await context.Users.FirstOrDefaultAsync(x => x.Id == userId)
+            ?? throw new Exception("User not found.");
     }
 
     public async Task UpdateAsync(Domain.Models.User user)
@@ -34,7 +40,7 @@ public class UserData(DatabaseContext context) : IUserData
         await context.SaveChangesAsync();
     }
 
-    public Task<Domain.Models.User?> Login(LoginRequest user)
+    public Task<Domain.Models.User?> Login(SignInRequest user)
     {
         return context.Users.FirstOrDefaultAsync(x => x.Username == user.Username && x.Password == user.Password);
     }

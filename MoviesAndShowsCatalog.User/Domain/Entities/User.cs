@@ -8,6 +8,7 @@ public class User
     public string Username { get; private set; } = string.Empty;
     public string Password { get; private set; } = string.Empty;
     public Role Role { get; private set; } = Role.Commom;
+    public List<Genre> GenrePreferences { get; private set; } = [];
 
     public User(string username, string password, Role role)
     {
@@ -16,5 +17,18 @@ public class User
         Role = role;
     }
 
-    public User() {}
+    public User() { }
+
+    public void SetGenrePreferences(int[] genreCodes)
+    {
+        GenrePreferences.Clear();
+
+        foreach (int genreCode in genreCodes)
+        {
+            if (Enum.IsDefined(typeof(Genre), genreCode))
+            {
+                GenrePreferences.Add((Genre)genreCode);
+            }
+        }
+    }
 }

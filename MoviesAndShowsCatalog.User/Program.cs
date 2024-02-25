@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoviesAndShowsCatalog.User.Application.Services;
+using MoviesAndShowsCatalog.User.Application.UseCases;
 using MoviesAndShowsCatalog.User.Domain.Data;
 using MoviesAndShowsCatalog.User.Domain.Services;
+using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
 using MoviesAndShowsCatalog.User.Domain.Util;
 using MoviesAndShowsCatalog.User.Infrastructure.Data;
 using System.Text;
@@ -68,7 +70,8 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 builder.Services
     .AddScoped<IUserData, UserData>()
     .AddScoped<ISettings, Settings>()
-    .AddScoped<ITokenService, TokenService>();
+    .AddScoped<ITokenService, TokenService>()
+    .AddScoped<ISetGenrePreferences, SetGenrePreferences>();
 
 var app = builder.Build();
 

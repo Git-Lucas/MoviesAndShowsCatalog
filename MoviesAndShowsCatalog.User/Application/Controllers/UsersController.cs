@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.User.Domain.Data;
-using MoviesAndShowsCatalog.User.Domain.DTOs;
 using MoviesAndShowsCatalog.User.Domain.Enums;
+using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
@@ -15,7 +15,7 @@ public class UsersController(IUserData userData) : ControllerBase
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     public async Task<IActionResult> Create([FromBody] Domain.Models.User user)
     {
-        LoginRequest loginRequest = new()
+        SignInRequest loginRequest = new()
         {
             Username = user.Username,
             Password = user.Password

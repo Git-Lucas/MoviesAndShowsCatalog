@@ -17,8 +17,8 @@ public class TokenService(ISettings settings) : ITokenService
         {
             Subject = new ClaimsIdentity(new Claim[]
             {
-                    new(ClaimTypes.Name, user.Username.ToString()),
-                    new(ClaimTypes.Role, user.Role.ToString()),
+                new(ClaimTypes.Name, user.Username.ToString()),
+                new(ClaimTypes.Role, user.Role.ToString()),
             }),
             Expires = DateTime.UtcNow.AddHours(2),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
