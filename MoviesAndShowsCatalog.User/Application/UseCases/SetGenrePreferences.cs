@@ -8,7 +8,7 @@ public class SetGenrePreferences(IUserData userData) : ISetGenrePreferences
 {
     public async Task ExecuteAsync(SetGenrePreferencesRequest setGenrePreferencesRequest)
     {
-        Domain.Models.User user = await userData.GetByIdAsync(setGenrePreferencesRequest.UserId);
+        Domain.Entities.User user = await userData.GetByIdAsync(setGenrePreferencesRequest.UserId);
         user.SetGenrePreferences(setGenrePreferencesRequest.GenresCodes);
 
         await userData.UpdateAsync(user);

@@ -1,6 +1,6 @@
 ﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.DTOs;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Application.UseCases;
@@ -13,7 +13,7 @@ public class GetRatingsAndReviewsByVisualProductionId(
     {
         VisualProduction visualProduction = await visualProductionData.GetByIdAsync(visualProductionId);
         
-        IEnumerable<Domain.Models.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAllByVisualProductionId(visualProductionId);
+        IEnumerable<Domain.Entities.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAllByVisualProductionId(visualProductionId);
 
         GetRatingsAndReviewsResponse getRatingsAndReviewsResponse = new(visualProduction.Id, ratingsAndReviews);
 

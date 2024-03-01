@@ -1,6 +1,6 @@
 ﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Enums;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
+namespace MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
 
 public class VisualProduction
 {

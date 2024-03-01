@@ -8,7 +8,7 @@ public class GetWorstRatedVisualProduction(IRatingAndReviewData ratingAndReviewD
 {
     public GetRatingsAndReviewsResponse Execute()
     {
-        IEnumerable<Domain.Models.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAll();
+        IEnumerable<Domain.Entities.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAll();
         GetRatingsAndReviewsResponse getRatingsAndReviewsResponse = ratingsAndReviews
             .GroupBy(x => x.VisualProductionId)
             .Select(x => new GetRatingsAndReviewsResponse(x.Key, x))

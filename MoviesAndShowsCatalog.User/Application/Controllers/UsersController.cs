@@ -13,14 +13,14 @@ public class UsersController(IUserData userData) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Create([FromBody] Domain.Models.User user)
+    public async Task<IActionResult> Create([FromBody] Domain.Entities.User user)
     {
         SignInRequest loginRequest = new()
         {
             Username = user.Username,
             Password = user.Password
         };
-        Domain.Models.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
+        Domain.Entities.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
         if (userAlreadyExistsInDatabase is not null)
         {
             return BadRequest("The user has already been register.");
@@ -32,7 +32,7 @@ public class UsersController(IUserData userData) : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<Domain.Models.User>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<Domain.Entities.User>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await userData.GetAllAsync());
@@ -40,7 +40,7 @@ public class UsersController(IUserData userData) : ControllerBase
 
     [HttpPut("{userId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateAsync([FromRoute] int userId, [FromBody] Domain.Models.User user)
+    public async Task<IActionResult> UpdateAsync([FromRoute] int userId, [FromBody] Domain.Entities.User user)
     {
         if (userId != user.Id)
         {

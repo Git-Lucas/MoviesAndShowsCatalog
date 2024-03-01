@@ -1,5 +1,5 @@
 ﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
 using System.Text.Json;
 

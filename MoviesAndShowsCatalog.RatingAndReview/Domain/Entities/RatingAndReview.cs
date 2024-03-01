@@ -1,8 +1,8 @@
 ﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.ValueObjects;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
+namespace MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
 
-public class RatingAndReview 
+public class RatingAndReview
 {
     public int Id { get; private set; }
     public Rating Rating { get; private set; } = new();

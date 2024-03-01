@@ -2,5 +2,5 @@
 
 public interface ITokenService
 {
-    string GenerateToken(Models.User user);
+    string GenerateToken(Entities.User user);
 }

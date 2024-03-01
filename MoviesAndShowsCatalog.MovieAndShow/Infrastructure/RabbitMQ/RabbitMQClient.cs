@@ -1,4 +1,4 @@
-﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.Models;
+﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using RabbitMQ.Client;
 using System.Text;

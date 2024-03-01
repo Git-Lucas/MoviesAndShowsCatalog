@@ -1,6 +1,6 @@
 ﻿using MoviesAndShowsCatalog.User.Domain.Enums;
 
-namespace MoviesAndShowsCatalog.User.Domain.Models;
+namespace MoviesAndShowsCatalog.User.Domain.Entities;
 
 public class User
 {

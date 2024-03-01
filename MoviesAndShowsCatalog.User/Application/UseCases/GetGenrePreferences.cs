@@ -7,7 +7,7 @@ public class GetGenrePreferences(IUserData userData) : IGetGenrePreferences
 {
     public async Task<string[]> ExecuteAsync(int userId)
     {
-        Domain.Models.User userFromDatabase = await userData.GetByIdAsync(userId);
+        Domain.Entities.User userFromDatabase = await userData.GetByIdAsync(userId);
 
         string[] genrePreferencesUser = userFromDatabase
             .GenrePreferences

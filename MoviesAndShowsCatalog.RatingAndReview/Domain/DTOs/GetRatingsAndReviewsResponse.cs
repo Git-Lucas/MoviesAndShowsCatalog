@@ -6,18 +6,18 @@ public record GetRatingsAndReviewsResponse
     public float AverageRating { get; set; }
     public List<RatingAndReviewResponse> RatingsAndReviews { get; set; } = [];
 
-    public GetRatingsAndReviewsResponse(int visualProducionId, IEnumerable<Models.RatingAndReview> ratingsAndReviews)
+    public GetRatingsAndReviewsResponse(int visualProducionId, IEnumerable<Entities.RatingAndReview> ratingsAndReviews)
     {
         VisualProductionId = visualProducionId;
         RatingsAndReviews = MapDomainObjectToDTO(ratingsAndReviews);
         AverageRating = CalculateAverageRating();
     }
 
-    private List<RatingAndReviewResponse> MapDomainObjectToDTO(IEnumerable<Models.RatingAndReview> ratingsAndReviews)
+    private List<RatingAndReviewResponse> MapDomainObjectToDTO(IEnumerable<Entities.RatingAndReview> ratingsAndReviews)
     {
         List<RatingAndReviewResponse> result = [];
 
-        foreach (Models.RatingAndReview ratingAndReview in ratingsAndReviews)
+        foreach (Entities.RatingAndReview ratingAndReview in ratingsAndReviews)
         {
             result.Add(new RatingAndReviewResponse()
             {

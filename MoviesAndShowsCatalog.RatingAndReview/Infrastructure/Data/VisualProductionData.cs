@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
 

@@ -9,7 +9,7 @@ namespace MoviesAndShowsCatalog.User.Application.Services;
 
 public class TokenService(ISettings settings) : ITokenService
 {
-    public string GenerateToken(Domain.Models.User user)
+    public string GenerateToken(Domain.Entities.User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(settings.Secret);

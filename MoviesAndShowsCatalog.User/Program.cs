@@ -7,6 +7,7 @@ using MoviesAndShowsCatalog.User.Application.UseCases;
 using MoviesAndShowsCatalog.User.Domain.Data;
 using MoviesAndShowsCatalog.User.Domain.Services;
 using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
+using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications;
 using MoviesAndShowsCatalog.User.Domain.Util;
 using MoviesAndShowsCatalog.User.Infrastructure.Data;
 using System.Text;
@@ -69,11 +70,13 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 
 builder.Services
     .AddScoped<IUserData, UserData>()
+    .AddScoped<INotificationData, NotificationData>()
     .AddScoped<ISettings, Settings>()
     .AddScoped<ITokenService, TokenService>()
     .AddScoped<ISetGenrePreferences, SetGenrePreferences>()
     .AddScoped<IGetGenrePreferences, GetGenrePreferences>()
-    .AddScoped<IValidateUserIdentity, ValidateUserIdentity>();
+    .AddScoped<IGetNotifications, GetNotifications>()
+    .AddScoped<IBearerTokenUtils, BearerTokenUtils>();
 
 var app = builder.Build();
 

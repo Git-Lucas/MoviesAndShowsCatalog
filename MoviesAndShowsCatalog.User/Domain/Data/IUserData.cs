@@ -4,11 +4,11 @@ namespace MoviesAndShowsCatalog.User.Domain.Data;
 
 public interface IUserData
 {
-    Task<int> CreateAsync(Models.User user);
-    Task<IEnumerable<Models.User>> GetAllAsync();
-    Task<Models.User> GetByIdAsync(int userId);
-    Task UpdateAsync(Models.User user);
+    Task<int> CreateAsync(Entities.User user);
+    Task<IEnumerable<Entities.User>> GetAllAsync();
+    Task<Entities.User> GetByIdAsync(int userId);
+    Task UpdateAsync(Entities.User user);
     Task DeleteAsync(int idUser);
 
-    Task<Models.User?> Login(SignInRequest user);
+    Task<Entities.User?> Login(SignInRequest user);
 }

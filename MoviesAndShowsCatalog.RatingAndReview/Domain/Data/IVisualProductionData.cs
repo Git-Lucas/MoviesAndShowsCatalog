@@ -1,4 +1,4 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
 
