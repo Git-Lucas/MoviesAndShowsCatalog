@@ -5,10 +5,13 @@ using Microsoft.OpenApi.Models;
 using MoviesAndShowsCatalog.User.Application.Services;
 using MoviesAndShowsCatalog.User.Application.UseCases;
 using MoviesAndShowsCatalog.User.Domain.Data;
+using MoviesAndShowsCatalog.User.Domain.RabbitMQ;
 using MoviesAndShowsCatalog.User.Domain.Services;
 using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
+using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.Interfaces;
 using MoviesAndShowsCatalog.User.Domain.Util;
 using MoviesAndShowsCatalog.User.Infrastructure.Data;
+using MoviesAndShowsCatalog.User.Infrastructure.RabbitMQ;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,12 +71,21 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
     opt.UseMySql(connectionStringMySql, ServerVersion.AutoDetect(connectionStringMySql)));
 
 builder.Services
+    .AddSingleton<IEventProcessor, EventProcessor>()
+    //Repositories
     .AddScoped<IUserData, UserData>()
+    .AddScoped<INotificationData, NotificationData>()
+    //RabbitMQ
+    .AddHostedService<RabbitMQSubscriber>()
+    //Services or Utils
     .AddScoped<ISettings, Settings>()
     .AddScoped<ITokenService, TokenService>()
+    .AddScoped<IBearerTokenUtils, BearerTokenUtils>()
+    .AddScoped<INotificationService, NotificationService>()
+    //UseCases
     .AddScoped<ISetGenrePreferences, SetGenrePreferences>()
     .AddScoped<IGetGenrePreferences, GetGenrePreferences>()
-    .AddScoped<IValidateUserIdentity, ValidateUserIdentity>();
+    .AddScoped<IGetNotifications, GetNotifications>();
 
 var app = builder.Build();
 

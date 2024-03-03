@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Models;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.Models;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
 
@@ -20,7 +20,7 @@ public class VisualProductionData(DatabaseContext context) : IVisualProductionDa
     public async Task<VisualProduction> GetByIdAsync(int visualProductionId)
     {
         return await context.VisualProductions.FirstOrDefaultAsync(x => x.Id == visualProductionId)
-            ?? throw new Exception($"{nameof(VisualProduction)} not found int the database.");
+            ?? throw new Exception($"{nameof(VisualProduction)} not found in the database.");
     }
 
     public async Task DeleteAsync(VisualProduction visualProduction)

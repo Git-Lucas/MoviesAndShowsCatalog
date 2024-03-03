@@ -8,10 +8,13 @@ namespace MoviesAndShowsCatalog.MovieAndShow.Application.Controllers;
 public class GenresController : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Dictionary<int, string>), StatusCodes.Status200OK)]
     public IActionResult GetAll()
     {
-        string[] genres = Enum.GetNames(typeof(Genre));
+        Dictionary<int, string> genres = Enum
+            .GetValues(typeof(Genre))
+            .Cast<Genre>()
+            .ToDictionary(x => (int)x, x => x.ToString());
         return Ok(genres);
     }
 }

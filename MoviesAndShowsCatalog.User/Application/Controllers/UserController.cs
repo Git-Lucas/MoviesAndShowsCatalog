@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.User.Domain.Data;
+using MoviesAndShowsCatalog.User.Domain.Entities;
 using MoviesAndShowsCatalog.User.Domain.Enums;
 using MoviesAndShowsCatalog.User.Domain.Services;
 using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.DTOs;
 using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
+using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.DTOs;
+using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.Interfaces;
 using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
 using MoviesAndShowsCatalog.User.Domain.UseCases.SignUp.DTOs;
 using MoviesAndShowsCatalog.User.Domain.Util;
@@ -18,7 +21,8 @@ public class UserController(
     ITokenService tokenService,
     ISetGenrePreferences setGenrePreferences,
     IGetGenrePreferences getGenrePreferences,
-    IValidateUserIdentity validateUserIdentity) : ControllerBase
+    IBearerTokenUtils bearerTokenUtils,
+    IGetNotifications getNotifications) : ControllerBase
 {
     [HttpPost("signUp")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
@@ -29,13 +33,13 @@ public class UserController(
             Username = registerRequest.Username,
             Password = registerRequest.Password
         };
-        Domain.Models.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
+        Domain.Entities.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
         if (userAlreadyExistsInDatabase is not null)
         {
             return BadRequest("The user has already been register.");
         }
 
-        Domain.Models.User user = new(registerRequest.Username, registerRequest.Password, Role.Commom);
+        Domain.Entities.User user = new(registerRequest.Username, registerRequest.Password, Role.Commom);
         int createdUserId = await userData.CreateAsync(user);
 
         return Created(string.Empty, createdUserId);
@@ -45,7 +49,7 @@ public class UserController(
     [ProducesResponseType(typeof(SignInResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> SignIn(SignInRequest user)
     {
-        Domain.Models.User? userFromDatabase = await userData.Login(user);
+        Domain.Entities.User? userFromDatabase = await userData.Login(user);
 
         if (userFromDatabase is null)
         {
@@ -62,17 +66,42 @@ public class UserController(
         return Ok(loginResponse);
     }
 
-    [HttpPost("genrePreferences")]
+    [HttpGet("notifications")]
     [Authorize]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> SetGenrePreferences([FromBody] SetGenrePreferencesRequest setGenrePreferencesRequest)
+    [ProducesResponseType(typeof(IEnumerable<NotificationResponse>), StatusCodes.Status200OK)]
+    public IActionResult GetNotificationsAsync()
     {
+        int userId;
         try
         {
             string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
             string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-            validateUserIdentity.ExecuteComparingWithToken(bearerToken, setGenrePreferencesRequest.UserId);
+            userId = bearerTokenUtils.GetUserIdByToken(bearerToken);
+        }
+        catch (Exception)
+        {
+            return Unauthorized();
+        }
+
+        IEnumerable<NotificationResponse> notifications = getNotifications.Execute(userId);
+
+        return Ok(notifications);
+    }
+
+    [HttpPost("genrePreferences")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> SetGenrePreferences([FromBody] SetGenrePreferencesRequest setGenrePreferencesRequest)
+    {
+        int userId;
+        try
+        {
+            string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
+            string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+            userId = bearerTokenUtils.GetUserIdByToken(bearerToken);
+            setGenrePreferencesRequest.SetUserId(userId);
         }
         catch (Exception)
         {
@@ -83,17 +112,18 @@ public class UserController(
         return NoContent();
     }
 
-    [HttpGet("genrePreferences/{userId:int}")]
+    [HttpGet("genrePreferences")]
     [Authorize]
     [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGenrePreferences([FromRoute] int userId)
+    public async Task<IActionResult> GetGenrePreferences()
     {
+        int userId;
         try
         {
             string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
             string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-            validateUserIdentity.ExecuteComparingWithToken(bearerToken, userId);
+            userId = bearerTokenUtils.GetUserIdByToken(bearerToken);
         }
         catch (Exception)
         {

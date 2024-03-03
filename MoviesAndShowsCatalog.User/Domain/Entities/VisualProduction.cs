@@ -1,7 +1,7 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Enums;
+﻿using MoviesAndShowsCatalog.User.Domain.Enums;
 using System.Text.Json.Serialization;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
+namespace MoviesAndShowsCatalog.User.Domain.Entities;
 
 public class VisualProduction
 {

@@ -66,13 +66,13 @@ builder.Services.AddSwaggerGen(x =>
 builder.Services.AddDbContext<DatabaseContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddHostedService<RabbitMQSubscriber>();
-
 builder.Services
     .AddSingleton<IEventProcessor, EventProcessor>()
     //Repositories
     .AddScoped<IVisualProductionData, VisualProductionData>()
     .AddScoped<IRatingAndReviewData, RatingAndReviewData>()
+    //RabbitMQ
+    .AddHostedService<RabbitMQSubscriber>()
     //UseCases
     .AddScoped<ICreateRatingAndReview, CreateRatingAndReview>()
     .AddScoped<IGetRatingsAndReviewsByVisualProductionId, GetRatingsAndReviewsByVisualProductionId>()

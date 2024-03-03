@@ -1,9 +1,9 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
+﻿using MoviesAndShowsCatalog.User.Domain.RabbitMQ;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;
+namespace MoviesAndShowsCatalog.User.Infrastructure.RabbitMQ;
 
 public class RabbitMQSubscriber : BackgroundService
 {
@@ -33,10 +33,6 @@ public class RabbitMQSubscriber : BackgroundService
             queue: _queueName,
             exchange: _exchangeName,
             routingKey: "Created");
-        _channel.QueueBind(
-            queue: _queueName,
-            exchange: _exchangeName,
-            routingKey: "Deleted");
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)

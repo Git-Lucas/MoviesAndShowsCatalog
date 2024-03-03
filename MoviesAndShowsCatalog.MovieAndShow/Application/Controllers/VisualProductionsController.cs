@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.DTOs;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Enums;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Models;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Util;
 
@@ -14,14 +14,20 @@ namespace MoviesAndShowsCatalog.MovieAndShow.Application.Controllers;
 public class VisualProductionsController(IVisualProductionData visualProductionData, IRabbitMQClient rabbitMQClient) : ControllerBase
 {
     [HttpPost]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<IActionResult> CreateAsync([FromBody] VisualProduction visualProduction)
+    public async Task<IActionResult> CreateAsync([FromBody] CreateVisualProductionRequest createVisualProductionRequest)
     {
-        await visualProductionData.CreateAsync(visualProduction);
-        rabbitMQClient.CreateVisualProduction(visualProduction);
+        VisualProduction visualProduction = new(
+                title: createVisualProductionRequest.Title, 
+                genre: createVisualProductionRequest.Genre, 
+                releaseYear: createVisualProductionRequest.ReleaseYear
+            );
 
-        return Ok(visualProduction.Id);
+        await visualProductionData.CreateAsync(visualProduction);
+        rabbitMQClient.VisualProductionCreated(visualProduction);
+
+        return Created(string.Empty, visualProduction.Id);
     }
 
     [HttpGet]
@@ -70,7 +76,7 @@ public class VisualProductionsController(IVisualProductionData visualProductionD
         }
 
         await visualProductionData.DeleteAsync(visualProduction);
-        rabbitMQClient.DeleteVisualProduction(visualProductionId);
+        rabbitMQClient.VisualProductionDeleted(visualProductionId);
 
         return Ok();
     }

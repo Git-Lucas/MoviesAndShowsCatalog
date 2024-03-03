@@ -1,4 +1,4 @@
-﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.Models;
+﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using RabbitMQ.Client;
 using System.Text;
@@ -12,7 +12,7 @@ public class RabbitMQClient : IRabbitMQClient
     private readonly ILogger<RabbitMQClient> _logger;
     private readonly IConnection _connection;
     private readonly IModel _channel;
-    private readonly string _exchangeName = "VisualProductionExchange";
+    private readonly string _exchangeName = "VisualProductionExchange1";
 
     public RabbitMQClient(IConfiguration configuration, ILogger<RabbitMQClient> logger)
     {
@@ -25,31 +25,31 @@ public class RabbitMQClient : IRabbitMQClient
             Port = int.Parse(_configuration["RabbitMQ:Port"]!)
         }.CreateConnection();
         _channel = _connection.CreateModel();
-        _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Fanout);
+        _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Topic);
     }
 
-    public void CreateVisualProduction(VisualProduction visualProduction)
+    public void VisualProductionCreated(VisualProduction visualProduction)
     {
         string message = JsonSerializer.Serialize(visualProduction);
         byte[] body = Encoding.UTF8.GetBytes(message);
 
         _channel.BasicPublish(
             exchange: _exchangeName,
-            routingKey: "Create",
+            routingKey: "Created",
             basicProperties: null,
             body: body);
 
         _logger.LogInformation($"Message published to the queue. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
     }
 
-    public void DeleteVisualProduction(int visualProductionId)
+    public void VisualProductionDeleted(int visualProductionId)
     {
         string message = JsonSerializer.Serialize(visualProductionId);
         byte[] body = Encoding.UTF8.GetBytes(message);
 
         _channel.BasicPublish(
             exchange: _exchangeName,
-            routingKey: "Delete",
+            routingKey: "Deleted",
             basicProperties: null,
             body: body);
 
