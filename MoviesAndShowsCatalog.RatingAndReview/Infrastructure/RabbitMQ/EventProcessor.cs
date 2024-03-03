@@ -17,8 +17,8 @@ public class EventProcessor : IEventProcessor
         _serviceScopeFactory = serviceScopeFactory;
         _logger = logger;
 
-        _routingKeyActions.Add($"Create", async () => await CreateVisualProductionAsync(_message));
-        _routingKeyActions.Add($"Delete", async () => await DeleteVisualProductionAsync(_message));
+        _routingKeyActions.Add($"Created", async () => await CreateVisualProductionAsync(_message));
+        _routingKeyActions.Add($"Deleted", async () => await DeleteVisualProductionAsync(_message));
     }
 
     public void ProcessAsync(string routingKey, string message)
@@ -31,33 +31,47 @@ public class EventProcessor : IEventProcessor
         }
         else
         {
-            _logger.LogError($"A mensagem recebida não possui função mapeada. Routing key: {routingKey}");
+            _logger.LogError($"The message received does not have a mapped function. Routing key: {routingKey}");
         }
     }
 
     public async Task CreateVisualProductionAsync(string message)
     {
-        using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        IVisualProductionData visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionData>();
+        try
+        {
+            using IServiceScope scope = _serviceScopeFactory.CreateScope();
+            IVisualProductionData visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionData>();
 
-        VisualProduction visualProduction = JsonSerializer.Deserialize<VisualProduction>(message)
-            ?? throw new Exception("It was not possible to convert the message.");
+            VisualProduction visualProduction = JsonSerializer.Deserialize<VisualProduction>(message)
+                ?? throw new Exception("It was not possible to convert the message.");
 
-        await visualProductionData.CreateAsync(visualProduction);
+            await visualProductionData.CreateAsync(visualProduction);
 
-        _logger.LogInformation($"{nameof(VisualProduction)} registered sucessfully.");
+            _logger.LogInformation($"{nameof(VisualProduction)} registered sucessfully. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+        }
     }
 
     public async Task DeleteVisualProductionAsync(string message)
     {
-        using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        IVisualProductionData visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionData>();
+        try
+        {
+            using IServiceScope scope = _serviceScopeFactory.CreateScope();
+            IVisualProductionData visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionData>();
 
-        int visualProductionId = JsonSerializer.Deserialize<int>(message);
+            int visualProductionId = JsonSerializer.Deserialize<int>(message);
 
-        VisualProduction visualProductionFromDatabase = await visualProductionData.GetByIdAsync(visualProductionId);
-        await visualProductionData.DeleteAsync(visualProductionFromDatabase);
+            VisualProduction visualProductionFromDatabase = await visualProductionData.GetByIdAsync(visualProductionId);
+            await visualProductionData.DeleteAsync(visualProductionFromDatabase);
 
-        _logger.LogInformation($"{nameof(VisualProduction)} deleted sucessfully.");
+            _logger.LogInformation($"{nameof(VisualProduction)} deleted sucessfully. (ID: {visualProductionId} | DateTime: {DateTime.Now})");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+        }
     }
 }

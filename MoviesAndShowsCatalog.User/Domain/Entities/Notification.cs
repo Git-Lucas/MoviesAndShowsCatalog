@@ -7,9 +7,8 @@ public class Notification
     public User? User { get; private set; }
     public int UserId { get; private set; }
 
-    public Notification(int id, string message, int userId)
+    public Notification(string message, int userId)
     {
-        Id = id;
         Message = message;
         UserId = userId;
     }

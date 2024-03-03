@@ -6,7 +6,8 @@ using MoviesAndShowsCatalog.User.Domain.Enums;
 using MoviesAndShowsCatalog.User.Domain.Services;
 using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.DTOs;
 using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications;
+using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.DTOs;
+using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.Interfaces;
 using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
 using MoviesAndShowsCatalog.User.Domain.UseCases.SignUp.DTOs;
 using MoviesAndShowsCatalog.User.Domain.Util;
@@ -67,11 +68,10 @@ public class UserController(
 
     [HttpGet("notifications")]
     [Authorize]
-    [ProducesResponseType(typeof(IEnumerable<Notification>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<NotificationResponse>), StatusCodes.Status200OK)]
     public IActionResult GetNotificationsAsync()
     {
         int userId;
-
         try
         {
             string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
@@ -84,7 +84,7 @@ public class UserController(
             return Unauthorized();
         }
 
-        IEnumerable<Notification> notifications = getNotifications.Execute(userId);
+        IEnumerable<NotificationResponse> notifications = getNotifications.Execute(userId);
 
         return Ok(notifications);
     }
@@ -94,12 +94,14 @@ public class UserController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> SetGenrePreferences([FromBody] SetGenrePreferencesRequest setGenrePreferencesRequest)
     {
+        int userId;
         try
         {
             string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
             string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-            bearerTokenUtils.ValidateUserIdentity(bearerToken, setGenrePreferencesRequest.UserId);
+            userId = bearerTokenUtils.GetUserIdByToken(bearerToken);
+            setGenrePreferencesRequest.SetUserId(userId);
         }
         catch (Exception)
         {
@@ -110,17 +112,18 @@ public class UserController(
         return NoContent();
     }
 
-    [HttpGet("genrePreferences/{userId:int}")]
+    [HttpGet("genrePreferences")]
     [Authorize]
     [ProducesResponseType(typeof(string[]), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetGenrePreferences([FromRoute] int userId)
+    public async Task<IActionResult> GetGenrePreferences()
     {
+        int userId;
         try
         {
             string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
             string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-            bearerTokenUtils.ValidateUserIdentity(bearerToken, userId);
+            userId = bearerTokenUtils.GetUserIdByToken(bearerToken);
         }
         catch (Exception)
         {

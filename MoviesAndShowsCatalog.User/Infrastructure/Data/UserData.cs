@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesAndShowsCatalog.User.Domain.Data;
+using MoviesAndShowsCatalog.User.Domain.Enums;
 using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
 
 namespace MoviesAndShowsCatalog.User.Infrastructure.Data;
@@ -16,7 +17,9 @@ public class UserData(DatabaseContext context) : IUserData
 
     public async Task<IEnumerable<Domain.Entities.User>> GetAllAsync()
     {
-        return await context.Users.ToListAsync();
+        return await context.Users
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<Domain.Entities.User> GetByIdAsync(int userId)
@@ -25,6 +28,16 @@ public class UserData(DatabaseContext context) : IUserData
             ?? throw new Exception("User not found.");
     }
 
+    public async Task<int[]> GetUsersIdsByGenreAsync(Genre genre)
+    {
+        IEnumerable<Domain.Entities.User> users = await GetAllAsync();
+
+        return users
+            .Where(x => x.GenrePreferences.Contains(genre))
+            .Select(x => x.Id)
+            .ToArray();
+    }
+    
     public async Task UpdateAsync(Domain.Entities.User user)
     {
         context.Users.Update(user);

@@ -2,6 +2,11 @@
 
 public record SetGenrePreferencesRequest
 {
-    public required int UserId { get; set; }
+    public int UserId { get; private set; }
     public required int[] GenresCodes { get; set; }
+
+    public void SetUserId(int userId)
+    {
+        UserId = userId;
+    }
 }
