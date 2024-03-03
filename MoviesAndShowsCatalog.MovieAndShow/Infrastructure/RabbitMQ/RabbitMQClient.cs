@@ -12,7 +12,7 @@ public class RabbitMQClient : IRabbitMQClient
     private readonly ILogger<RabbitMQClient> _logger;
     private readonly IConnection _connection;
     private readonly IModel _channel;
-    private readonly string _exchangeName = "VisualProductionExchange1";
+    private readonly string _exchangeName = "VisualProductionExchange";
 
     public RabbitMQClient(IConfiguration configuration, ILogger<RabbitMQClient> logger)
     {
