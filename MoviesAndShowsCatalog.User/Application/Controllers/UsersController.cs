@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.User.Domain.Data;
 using MoviesAndShowsCatalog.User.Domain.Enums;
 using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
+using MoviesAndShowsCatalog.User.Domain.UseCases.Users.DTOs;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
@@ -12,13 +13,13 @@ namespace MoviesAndShowsCatalog.User.Application.Controllers;
 public class UsersController(IUserData userData) : ControllerBase
 {
     [HttpPost]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Create([FromBody] Domain.Entities.User user)
+    [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
+    public async Task<IActionResult> Create([FromBody] CreateOrUpdateUserRequest createOrUpdateUserRequest)
     {
         SignInRequest loginRequest = new()
         {
-            Username = user.Username,
-            Password = user.Password
+            Username = createOrUpdateUserRequest.Username,
+            Password = createOrUpdateUserRequest.Password
         };
         Domain.Entities.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
         if (userAlreadyExistsInDatabase is not null)
@@ -26,36 +27,60 @@ public class UsersController(IUserData userData) : ControllerBase
             return BadRequest("The user has already been register.");
         }
 
-        int createdUserId = await userData.CreateAsync(user);
+        Domain.Entities.User userEntity = new(
+                username: createOrUpdateUserRequest.Username,
+                password: createOrUpdateUserRequest.Password,
+                role: createOrUpdateUserRequest.Role
+            );
+        int createdUserId = await userData.CreateAsync(userEntity);
 
-        return Ok(createdUserId);
+        return Created(string.Empty, createdUserId);
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<Domain.Entities.User>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<GetUserResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllAsync()
     {
-        return Ok(await userData.GetAllAsync());
+        IEnumerable<Domain.Entities.User> usersEntitiesFromDatabase = await userData.GetAllAsync();
+
+        List<GetUserResponse> usersResponse = [];
+        foreach (Domain.Entities.User user in usersEntitiesFromDatabase)
+        {
+            usersResponse.Add(
+                    new()
+                    {
+                        Id = user.Id,
+                        Username = user.Username,
+                        Password = user.Password,
+                        Role = user.Role.ToString(),
+                        GenrePreferences = user.GenrePreferences.Select(x => x.ToString()).ToArray()
+                    }
+                );
+        }
+
+        return Ok(usersResponse);
     }
 
     [HttpPut("{userId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateAsync([FromRoute] int userId, [FromBody] Domain.Entities.User user)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateAsync([FromRoute] int userId, [FromBody] CreateOrUpdateUserRequest createOrUpdateUserRequest)
     {
-        if (userId != user.Id)
+        if (userId != createOrUpdateUserRequest.Id)
         {
             BadRequest("Action not allowed (information conflict).");
         }
 
-        await userData.UpdateAsync(user);
-        return Ok();
+        Domain.Entities.User userFromDatabase = await userData.GetByIdAsync(userId);
+        userFromDatabase.Update(createOrUpdateUserRequest);
+        await userData.UpdateAsync(userFromDatabase);
+        return NoContent();
     }
 
     [HttpDelete("{userId:int}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteAsync([FromRoute] int userId)
     {
         await userData.DeleteAsync(userId);
-        return Ok();
+        return NoContent();
     }
 }

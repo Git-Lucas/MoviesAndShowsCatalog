@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.User.Domain.Data;
-using MoviesAndShowsCatalog.User.Domain.Entities;
 using MoviesAndShowsCatalog.User.Domain.Enums;
 using MoviesAndShowsCatalog.User.Domain.Services;
 using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.DTOs;
@@ -39,7 +38,11 @@ public class UserController(
             return BadRequest("The user has already been register.");
         }
 
-        Domain.Entities.User user = new(registerRequest.Username, registerRequest.Password, Role.Commom);
+        Domain.Entities.User user = new(
+                username: registerRequest.Username, 
+                password: registerRequest.Password, 
+                role: Role.Commom
+            );
         int createdUserId = await userData.CreateAsync(user);
 
         return Created(string.Empty, createdUserId);

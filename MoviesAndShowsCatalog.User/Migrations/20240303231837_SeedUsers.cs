@@ -17,8 +17,8 @@ namespace MoviesAndShowsCatalog.User.Migrations
                 columns: ["Id", "GenrePreferences", "Password", "Role", "Username"],
                 values: new object[,]
                 {
-                    { 1, "", "111", 1, "administrador" },
-                    { 2, "Action,ScienceFiction", "000", 0, "lucas" },
+                    { 1, "", "000", 1, "administrador" },
+                    { 2, "Action,ScienceFiction", "111", 0, "lucas" },
                     { 3, "Comedy,Adventure", "222", 0, "joão" },
                     { 4, "Action,Fantasy,Romance", "333", 0, "maria" },
                     { 5, "Animation,Documentary", "444", 0, "carlos" }

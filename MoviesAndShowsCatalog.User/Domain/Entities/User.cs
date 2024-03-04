@@ -1,4 +1,5 @@
 ﻿using MoviesAndShowsCatalog.User.Domain.Enums;
+using MoviesAndShowsCatalog.User.Domain.UseCases.Users.DTOs;
 
 namespace MoviesAndShowsCatalog.User.Domain.Entities;
 
@@ -30,5 +31,12 @@ public class User
                 GenrePreferences.Add((Genre)genreCode);
             }
         }
+    }
+
+    public void Update(CreateOrUpdateUserRequest createOrUpdateUserRequest)
+    {
+        Username = createOrUpdateUserRequest.Username;
+        Password = createOrUpdateUserRequest.Password;
+        Role = createOrUpdateUserRequest.Role;
     }
 }
