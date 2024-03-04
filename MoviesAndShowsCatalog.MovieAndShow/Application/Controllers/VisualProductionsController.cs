@@ -31,20 +31,36 @@ public class VisualProductionsController(IVisualProductionData visualProductionD
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(GetPagedResponse<VisualProduction>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetPagedResponse<VisualProductionResponse>), StatusCodes.Status200OK)]
     [Authorize]
     public async Task<IActionResult> GetAllAsync([FromQuery] int skip = 0, [FromQuery] int take = 5)
     {
+        IEnumerable<VisualProduction> visualProductionsFromDatabase = await visualProductionData.GetAllAsync(skip, take);
+        
+        List<VisualProductionResponse> visualProductionsResponse = [];
+        foreach (VisualProduction visualProduction in visualProductionsFromDatabase)
+        {
+            visualProductionsResponse.Add(
+                    new()
+                    {
+                        Id = visualProduction.Id,
+                        Title = visualProduction.Title,
+                        Genre = visualProduction.Genre.ToString(),
+                        ReleaseYear = visualProduction.ReleaseYear
+                    }
+                );
+        }
+
         int countVisualProductionInDatabase = await visualProductionData.CountAsync();
-        GetPagedResponse<VisualProduction> response = new()
+        GetPagedResponse<VisualProductionResponse> response = new()
         {
             Count = countVisualProductionInDatabase,
             Skip = skip,
             Take = take,
             CurrentPage = Pagination.CurrentPage(skip, take),
             TotalPages = Pagination.TotalPages(countVisualProductionInDatabase, take),
-            Results = await visualProductionData.GetAllAsync(skip, take)
-    };
+            Results = visualProductionsResponse
+        };
 
         return Ok(response);
     }

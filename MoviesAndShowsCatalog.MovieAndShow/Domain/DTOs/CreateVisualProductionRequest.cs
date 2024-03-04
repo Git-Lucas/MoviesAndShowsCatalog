@@ -2,7 +2,7 @@
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Domain.DTOs;
 
-public class CreateVisualProductionRequest
+public record CreateVisualProductionRequest
 {
     public required string Title { get; set; }
     public required Genre Genre { get; set; }
