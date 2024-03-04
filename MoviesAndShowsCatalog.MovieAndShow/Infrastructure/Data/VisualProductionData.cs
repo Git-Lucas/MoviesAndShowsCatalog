@@ -12,7 +12,7 @@ public class VisualProductionData(DatabaseContext context) : IVisualProductionDa
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<VisualProduction>> GetAllAsync(int skip, int take)
+    public async Task<IEnumerable<VisualProduction>> GetAllAsync(int skip, int take)
     {
         return await context.VisualProductions
             .Skip(skip)

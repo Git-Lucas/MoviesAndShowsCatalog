@@ -11,7 +11,7 @@ public class RabbitMQSubscriber : BackgroundService
     private readonly IEventProcessor _eventProcessor;
     private readonly IConnection _connection;
     private readonly IModel _channel;
-    private readonly string _exchangeName = "VisualProductionExchange1";
+    private readonly string _exchangeName = "VisualProductionExchange";
     private readonly string _queueName;
 
     public RabbitMQSubscriber(IConfiguration configuration, IEventProcessor eventProcessor)
