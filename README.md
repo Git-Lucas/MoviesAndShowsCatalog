@@ -13,8 +13,8 @@
    ```bash
    docker-compose up
    ```
-(img)
-(img)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/docker-compose.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/docker-compose1.png)
 2. Acesse o microsserviço de 'User' em "http://localhost:8080/swagger";
 
 3. Acesse o microsserviço de 'MovieAndShow' em "http://localhost:8081/swagger";
@@ -27,8 +27,8 @@
 	- Username: "joão"; Password: "222"; Role: "Commom";
 	- Username: "maria"; Password: "333"; Role: "Commom";
 	- Username: "carlos"; Password: "444"; Role: "Commom";
-	(img)
-	(img)
+	![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/Token.png)
+	![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/Token1.png)
 
 
 # Aplicação
@@ -45,33 +45,33 @@ Para usuários administradores, existem os seguintes casos de uso:
 - Editar um usuário;
 - Excluir um usuário;
 
-![](https://github.com/Git-Lucas/Back-End_Challenge_20210221/blob/master/imgs/Cron.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/User.png)
 
 ## Microsserviço de filmes e séries
 Aplicação (com banco de dados SQL Server) responsável por expor os seguintes casos de uso:
 - Visualizar os gêneros suportados pela aplicação (com o objetivo de facilitar o entendimento de qual gênero o código retornado nas respostas dos endpoints se refere);
 - Cadastrar um novo filme ou série (nesta ação, as outras 2 aplicações são notificadas para suas devidas ações correspondentes: a aplicação de 'User' envia notificação para os usuários interessados no gênero que existe novidade na plataforma; e a aplicação de 'RatingAndReview', cadastra este filme ou série em seu banco de dados, a fim de garantir autossuficiência de dados para cada aplicação);
 - Visualizar os filmes ou séries cadastrados no banco de dados (consulta paginada);
-(img)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/MovieAndShowPaginated.png)
 - Visualizar um filme ou série específico;
 - Excluir um filme ou série específico (esta ação também dispara uma mensagem no RabbitMQ para que este filme ou série também seja excluído no banco de dados de 'RatingAndReview');
 
-![](https://github.com/Git-Lucas/Back-End_Challenge_20210221/blob/master/imgs/Cron.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/MovieAndShow.png)
 
 ## Microsserviço de classificações e comentários
 Aplicação (com banco de dados Postgre) responsável por expor os seguintes casos de uso:
 - Classificar e comentar um filme ou série visto (classificação de 1 a 5);
 - Visualizar todas as classificações e comentários de um determinado filme (esta ação retorna também a média de avaliações do filme ou série);
-(img)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/RatingsAndReviewsByVisualProduction.png)
 - Visualizar as classificações e comentários do melhor e pior classificado filme ou série;
 - Visualizar todos os filmes ou séries cadastrados no banco de dados (recupera os filmes ou séries do banco de dados próprio - se a aplicação de filmes ou séries estiver indisponível, continua sendo possível acessar todas as funcionalidades de 'RatingAndReview');
 
-![](https://github.com/Git-Lucas/Back-End_Challenge_20210221/blob/master/imgs/Cron.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/RatingAndReview.png)
 
 ## RabbitMQ
 A comunicação entre os microsserviços é realizada de forma assíncrona, pelo servidor de mensageria 'RabbitMQ'.
 
-![](https://github.com/Git-Lucas/Back-End_Challenge_20210221/blob/master/imgs/Cron.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/RabbitMQ.png)
 
 ## Segurança
 Os microsserviços possuem segurança de autenticação e autorização baseada em token Bearer (gerado pelo microsserviço de 'User').
