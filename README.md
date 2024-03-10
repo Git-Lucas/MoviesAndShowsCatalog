@@ -15,6 +15,7 @@
    ```
 ![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/docker-compose.png)
 ![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/docker-compose1.png)
+
 2. Acesse o microsserviço de 'User' em "http://localhost:8080/swagger";
 
 3. Acesse o microsserviço de 'MovieAndShow' em "http://localhost:8081/swagger";
