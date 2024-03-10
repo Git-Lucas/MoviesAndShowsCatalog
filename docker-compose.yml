@@ -1,0 +1,74 @@
+version: '3.4'
+
+services:
+  user-service:
+    container_name: UserService
+    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.user:1.0
+    build:
+        context: .
+        dockerfile: MoviesAndShowsCatalog.User/Dockerfile
+    ports:
+        - "8080:8080"
+    depends_on:
+        - db-user
+        - rabbitmq
+    entrypoint: ["/bin/sh", "-c", "sleep 60 && dotnet MoviesAndShowsCatalog.User.dll"]
+    restart: always
+
+  db-user:
+    container_name: UserMySql
+    image: mysql:latest
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+
+  movie-and-show-service:
+    container_name: MovieAndShowService
+    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.movieandshow:1.0
+    build:
+        context: .
+        dockerfile: MoviesAndShowsCatalog.MovieAndShow/Dockerfile
+    ports:
+        - "8081:8080"
+    depends_on:
+        - db-movie-and-show
+        - rabbitmq
+    entrypoint: ["/bin/sh", "-c", "sleep 60 && dotnet MoviesAndShowsCatalog.MovieAndShow.dll"]
+    restart: always
+
+  db-movie-and-show:
+    container_name: MovieAndShowSqlServer
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: always
+    environment:
+        ACCEPT_EULA: Y
+        SA_PASSWORD: root@strongPassword
+        MSSQL_PID: Developer
+
+  rating-and-review-service:
+    container_name: RatingAndReviewService
+    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.ratingandreview:1.0
+    build:
+        context: .
+        dockerfile: MoviesAndShowsCatalog.RatingAndReview/Dockerfile
+    ports:
+        - "8082:8080"
+    depends_on:
+        - db-rating-and-review
+        - rabbitmq
+    entrypoint: ["/bin/sh", "-c", "sleep 60 && dotnet MoviesAndShowsCatalog.RatingAndReview.dll"]
+    restart: always
+
+  db-rating-and-review:
+    container_name: RatingAndReviewPostgre
+    image: postgres:latest
+    restart: always
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: root
+  
+  rabbitmq:
+    container_name: RabbitMQ
+    image: rabbitmq:3-management   
+    hostname: RabbitMQ
+    restart: always
