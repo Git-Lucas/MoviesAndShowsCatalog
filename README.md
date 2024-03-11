@@ -2,7 +2,7 @@
 <table>
 <tr>
 <td>
-  O projeto se refere ao desenho e implementação do back-end de uma aplicação de catálogos de filmes e séries baseada em microsserviços, onde é possível usuários autenticados classificarem e comentarem filmes e séries já vistos, assim como receber notificação com base em seus gêneros marcados como preferidos, a cada lançamento de filme ou série na plataforma. Esta aplicação provê as APIs	de cada microsserviço para gerenciamento dos dados (documentado utilizando o Swagger). Tecnologias utilizadas: C#, .NET 8, ASP.NET API, Authentication Jwt Bearer, Entity Framework, SQL Server, PostgreSQL, MySql, Docker, Clean Architecture, Hexagonal Architecture.
+  O projeto se refere ao desenho e implementação do back-end de uma aplicação de catálogos de filmes e séries baseada em microsserviços, onde é possível usuários autenticados classificarem e comentarem filmes e séries já vistos, assim como receber notificação com base em seus gêneros marcados como preferidos, a cada lançamento de filme ou série na plataforma. Esta aplicação provê as APIs	de cada microsserviço para gerenciamento dos dados (documentado utilizando o Swagger). Tecnologias utilizadas: C#, .NET 8, ASP.NET API, Authentication Jwt Bearer, Entity Framework, SQL Server, PostgreSQL, MySql, RabbitMQ, Docker, Clean Architecture, Hexagonal Architecture.
 </td>
 </tr>
 </table>
