@@ -4,7 +4,6 @@ services:
   db-rating-and-review:
     container_name: RatingAndReviewPostgre
     image: postgres:latest
-    restart: always
     ports:
         - 5432:5432
     environment:

@@ -4,7 +4,6 @@ services:
   db-movie-and-show:
     container_name: MovieAndShowSqlServer
     image: mcr.microsoft.com/mssql/server:2022-latest
-    restart: always
     ports:
         - 1433:1433
     environment:
@@ -13,9 +12,8 @@ services:
         MSSQL_PID: Developer
 
   rabbitmq:
-    container_name: RabbitMQ
+    container_name: MoviesAndShowsCatalogRabbitMQ
     image: rabbitmq:3-management   
     hostname: RabbitMQ
-    restart: always
     ports: 
         - 5672:5672

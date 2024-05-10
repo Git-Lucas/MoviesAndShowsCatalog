@@ -4,7 +4,6 @@ services:
   db-user:
     container_name: UserMySql
     image: mysql:latest
-    restart: always
     ports:
         - 3306:3306
     environment:
