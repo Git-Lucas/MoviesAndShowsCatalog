@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  db-user:
+    container_name: UserMySql
+    image: mysql:latest
+    ports:
+        - 3306:3306
+    environment:
+        MYSQL_ROOT_PASSWORD: root

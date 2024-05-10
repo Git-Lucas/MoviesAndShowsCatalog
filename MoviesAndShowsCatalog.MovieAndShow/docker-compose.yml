@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  db-movie-and-show:
+    container_name: MovieAndShowSqlServer
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+        - 1433:1433
+    environment:
+        ACCEPT_EULA: Y
+        SA_PASSWORD: root@strongPassword
+        MSSQL_PID: Developer
+
+  rabbitmq:
+    container_name: MoviesAndShowsCatalogRabbitMQ
+    image: rabbitmq:3-management   
+    hostname: RabbitMQ
+    ports: 
+        - 5672:5672
