@@ -2,7 +2,7 @@
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
 
-public interface IVisualProductionData
+public interface IVisualProductionRepository
 {
     Task CreateAsync(VisualProduction visualProduction);
     Task<IEnumerable<VisualProduction>> GetAllAsync(int skip, int take);
