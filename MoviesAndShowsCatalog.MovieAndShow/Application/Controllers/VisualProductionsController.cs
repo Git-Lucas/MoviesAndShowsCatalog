@@ -17,7 +17,7 @@ public class VisualProductionsController(IVisualProductionRepository visualProdu
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<IActionResult> CreateAsync([FromServices] IRabbitMQClient rabbitMQClient, [FromBody] CreateVisualProductionRequest createVisualProductionRequest)
+    public async Task<IActionResult> CreateAsync([FromServices] IRabbitMQProducer rabbitMQClient, [FromBody] CreateVisualProductionRequest createVisualProductionRequest)
     {
         VisualProduction visualProduction = createVisualProductionRequest.ToEntity();
 
@@ -62,7 +62,7 @@ public class VisualProductionsController(IVisualProductionRepository visualProdu
 
     [HttpDelete("{visualProductionId:int}")]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<IActionResult> DeleteAsync([FromServices] IRabbitMQClient rabbitMQClient, [FromRoute] int visualProductionId)
+    public async Task<IActionResult> DeleteAsync([FromServices] IRabbitMQProducer rabbitMQClient, [FromRoute] int visualProductionId)
     {
         VisualProduction? visualProduction = await _visualProductionRepository.GetByIdAsync(visualProductionId);
 

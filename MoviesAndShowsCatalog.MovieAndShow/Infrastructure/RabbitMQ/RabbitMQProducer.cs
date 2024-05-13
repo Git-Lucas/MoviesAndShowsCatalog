@@ -6,31 +6,30 @@ using System.Text.Json;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
 
-public class RabbitMQClient : IRabbitMQClient
+public class RabbitMQProducer : IRabbitMQProducer
 {
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<RabbitMQClient> _logger;
-    private readonly IConnection _connection;
+    private readonly ILogger<RabbitMQProducer> _logger;
     private readonly IModel _channel;
     private readonly string _exchangeName = "VisualProductionExchange";
 
-    public RabbitMQClient(IConfiguration configuration, ILogger<RabbitMQClient> logger)
+    public RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ config)
     {
-        _configuration = configuration;
         _logger = logger;
 
-        _connection = new ConnectionFactory()
-        {
-            HostName = _configuration["RabbitMQ:Host"],
-            Port = int.Parse(_configuration["RabbitMQ:Port"]!)
-        }.CreateConnection();
-        _channel = _connection.CreateModel();
+        _channel = config.CreateModel();
 
-        _channel.ExchangeDeclare(exchange: _exchangeName,
-                                 type: ExchangeType.Topic,
-                                 durable: true,
-                                 autoDelete: false,
-                                 arguments: null);
+        try
+        {
+            _channel.ExchangeDeclare(exchange: _exchangeName,
+                                     type: ExchangeType.Topic,
+                                     durable: true,
+                                     autoDelete: false,
+                                     arguments: null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Unable to declare exchange. Error: {ex.Message}");
+        }
     }
 
     public void VisualProductionCreated(VisualProduction visualProduction)

@@ -7,36 +7,37 @@ namespace MoviesAndShowsCatalog.User.Infrastructure.RabbitMQ;
 
 public class RabbitMQSubscriber : BackgroundService
 {
-    private readonly IConfiguration _configuration;
+    private readonly ILogger<RabbitMQSubscriber> _logger;
     private readonly IEventProcessor _eventProcessor;
-    private readonly IConnection _connection;
     private readonly IModel _channel;
     private readonly string _exchangeName = "VisualProductionExchange";
-    private readonly string _queueName;
+    private readonly string? _queueName;
 
-    public RabbitMQSubscriber(IConfiguration configuration, IEventProcessor eventProcessor)
+    public RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, IEventProcessor eventProcessor)
     {
-        _configuration = configuration;
+        _logger = logger;
         _eventProcessor = eventProcessor;
 
-        _connection = new ConnectionFactory()
+        _channel = config.CreateModel();
+
+        try
         {
-            HostName = _configuration["RabbitMQ:Host"],
-            Port = int.Parse(_configuration["RabbitMQ:Port"]!)
-        }.CreateConnection();
-        _channel = _connection.CreateModel();
+            _channel.ExchangeDeclare(exchange: _exchangeName,
+                                     type: ExchangeType.Topic,
+                                     durable: true,
+                                     autoDelete: false,
+                                     arguments: null);
+            _queueName = _channel.QueueDeclare().QueueName;
 
-        _channel.ExchangeDeclare(exchange: _exchangeName,
-                                 type: ExchangeType.Topic,
-                                 durable: true,
-                                 autoDelete: false,
-                                 arguments: null);
-        _queueName = _channel.QueueDeclare().QueueName;
-
-        _channel.QueueBind(
-            queue: _queueName,
-            exchange: _exchangeName,
-            routingKey: "Created");
+            _channel.QueueBind(
+                queue: _queueName,
+                exchange: _exchangeName,
+                routingKey: "Created");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Unable to configure the initial RabbitMQ settings. Error: {ex.Message}");
+        }
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)

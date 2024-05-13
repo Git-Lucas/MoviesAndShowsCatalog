@@ -66,7 +66,8 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 
 builder.Services
     .AddScoped<IVisualProductionRepository, VisualProductionRepository>()
-    .AddScoped<IRabbitMQClient, RabbitMQClient>();
+    .AddScoped<ConfigRabbitMQ>()
+    .AddScoped<IRabbitMQProducer, RabbitMQProducer>();
 
 var app = builder.Build();
 

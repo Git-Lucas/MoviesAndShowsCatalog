@@ -76,6 +76,7 @@ builder.Services
     .AddScoped<IUserData, UserData>()
     .AddScoped<INotificationData, NotificationData>()
     //RabbitMQ
+    .AddSingleton<ConfigRabbitMQ>()
     .AddHostedService<RabbitMQSubscriber>()
     //Services or Utils
     .AddScoped<ISettings, Settings>()
