@@ -25,21 +25,33 @@ public class RabbitMQClient : IRabbitMQClient
             Port = int.Parse(_configuration["RabbitMQ:Port"]!)
         }.CreateConnection();
         _channel = _connection.CreateModel();
-        _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Topic);
+        _channel.ExchangeDeclare(
+            _exchangeName,
+            ExchangeType.Topic,
+            true,
+            false,
+            null);
     }
 
     public void VisualProductionCreated(VisualProduction visualProduction)
     {
-        string message = JsonSerializer.Serialize(visualProduction);
-        byte[] body = Encoding.UTF8.GetBytes(message);
+        try
+        {
+            string message = JsonSerializer.Serialize(visualProduction);
+            byte[] body = Encoding.UTF8.GetBytes(message);
 
-        _channel.BasicPublish(
-            exchange: _exchangeName,
-            routingKey: "Created",
-            basicProperties: null,
-            body: body);
+            _channel.BasicPublish(
+                exchange: _exchangeName,
+                routingKey: "Created",
+                basicProperties: null,
+                body: body);
 
-        _logger.LogInformation($"Message published to the queue. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
+            _logger.LogInformation($"Message published to the queue. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
+        }   
+        catch (Exception ex)
+        {
+            _logger.LogError($"Unable to publish the message on exchange. Error: {ex.Message}");
+        }
     }
 
     public void VisualProductionDeleted(int visualProductionId)
