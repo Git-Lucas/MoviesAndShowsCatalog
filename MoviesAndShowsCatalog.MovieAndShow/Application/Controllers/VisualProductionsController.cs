@@ -10,23 +10,19 @@ namespace MoviesAndShowsCatalog.MovieAndShow.Application.Controllers;
 
 [ApiController]
 [Route("visualProductions")]
-public class VisualProductionsController(
-    IVisualProductionRepository visualProductionRepository, 
-    IRabbitMQClient rabbitMQClient) 
-    : ControllerBase
+public class VisualProductionsController(IVisualProductionRepository visualProductionRepository) : ControllerBase
 {
     private readonly IVisualProductionRepository _visualProductionRepository = visualProductionRepository;
-    private readonly IRabbitMQClient _rabbitMQClient = rabbitMQClient;
 
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateVisualProductionRequest createVisualProductionRequest)
+    public async Task<IActionResult> CreateAsync([FromServices] IRabbitMQClient rabbitMQClient, [FromBody] CreateVisualProductionRequest createVisualProductionRequest)
     {
         VisualProduction visualProduction = createVisualProductionRequest.ToEntity();
 
         await _visualProductionRepository.CreateAsync(visualProduction);
-        _rabbitMQClient.VisualProductionCreated(visualProduction);
+        rabbitMQClient.VisualProductionCreated(visualProduction);
 
         return Created(string.Empty, visualProduction.Id);
     }
@@ -66,7 +62,7 @@ public class VisualProductionsController(
 
     [HttpDelete("{visualProductionId:int}")]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<IActionResult> DeleteAsync([FromRoute] int visualProductionId)
+    public async Task<IActionResult> DeleteAsync([FromServices] IRabbitMQClient rabbitMQClient, [FromRoute] int visualProductionId)
     {
         VisualProduction? visualProduction = await _visualProductionRepository.GetByIdAsync(visualProductionId);
 
@@ -76,7 +72,7 @@ public class VisualProductionsController(
         }
 
         await _visualProductionRepository.DeleteAsync(visualProduction);
-        _rabbitMQClient.VisualProductionDeleted(visualProductionId);
+        rabbitMQClient.VisualProductionDeleted(visualProductionId);
 
         return Ok();
     }

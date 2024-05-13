@@ -24,9 +24,13 @@ public class RabbitMQSubscriber : BackgroundService
             HostName = _configuration["RabbitMQ:Host"],
             Port = int.Parse(_configuration["RabbitMQ:Port"]!)
         }.CreateConnection();
-
         _channel = _connection.CreateModel();
-        _channel.ExchangeDeclare(exchange: _exchangeName, type: ExchangeType.Topic);
+
+        _channel.ExchangeDeclare(exchange: _exchangeName,
+                                 type: ExchangeType.Topic,
+                                 durable: true,
+                                 autoDelete: false,
+                                 arguments: null);
         _queueName = _channel.QueueDeclare().QueueName;
 
         _channel.QueueBind(
