@@ -25,12 +25,12 @@ public class RabbitMQClient : IRabbitMQClient
             Port = int.Parse(_configuration["RabbitMQ:Port"]!)
         }.CreateConnection();
         _channel = _connection.CreateModel();
-        _channel.ExchangeDeclare(
-            _exchangeName,
-            ExchangeType.Topic,
-            true,
-            false,
-            null);
+
+        _channel.ExchangeDeclare(exchange: _exchangeName,
+                                 type: ExchangeType.Topic,
+                                 durable: true,
+                                 autoDelete: false,
+                                 arguments: null);
     }
 
     public void VisualProductionCreated(VisualProduction visualProduction)
@@ -40,14 +40,16 @@ public class RabbitMQClient : IRabbitMQClient
             string message = JsonSerializer.Serialize(visualProduction);
             byte[] body = Encoding.UTF8.GetBytes(message);
 
-            _channel.BasicPublish(
-                exchange: _exchangeName,
-                routingKey: "Created",
-                basicProperties: null,
-                body: body);
+            IBasicProperties props = _channel.CreateBasicProperties();
+            props.Persistent = true;
+
+            _channel.BasicPublish(exchange: _exchangeName,
+                                  routingKey: "Created",
+                                  basicProperties: props,
+                                  body: body);
 
             _logger.LogInformation($"Message published to the queue. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
-        }   
+        }
         catch (Exception ex)
         {
             _logger.LogError($"Unable to publish the message on exchange. Error: {ex.Message}");
@@ -56,15 +58,24 @@ public class RabbitMQClient : IRabbitMQClient
 
     public void VisualProductionDeleted(int visualProductionId)
     {
-        string message = JsonSerializer.Serialize(visualProductionId);
-        byte[] body = Encoding.UTF8.GetBytes(message);
+        try
+        {
+            string message = JsonSerializer.Serialize(visualProductionId);
+            byte[] body = Encoding.UTF8.GetBytes(message);
 
-        _channel.BasicPublish(
-            exchange: _exchangeName,
-            routingKey: "Deleted",
-            basicProperties: null,
-            body: body);
+            IBasicProperties props = _channel.CreateBasicProperties();
+            props.Persistent = true;
 
-        _logger.LogInformation($"Message published to the queue. (ID: {visualProductionId} | DateTime: {DateTime.Now})");
+            _channel.BasicPublish(exchange: _exchangeName,
+                                  routingKey: "Deleted",
+                                  basicProperties: props,
+                                  body: body);
+
+            _logger.LogInformation($"Message published to the queue. (ID: {visualProductionId} | DateTime: {DateTime.Now})");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Unable to publish the message on exchange. Error: {ex.Message}");
+        }
     }
 }
