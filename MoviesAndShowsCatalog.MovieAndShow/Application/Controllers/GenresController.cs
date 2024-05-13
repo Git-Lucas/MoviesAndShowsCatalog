@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Enums;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Enums;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Application.Controllers;
 

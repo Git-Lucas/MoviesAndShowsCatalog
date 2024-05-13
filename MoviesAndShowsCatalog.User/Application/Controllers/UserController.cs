@@ -1,27 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.User.Domain.Data;
-using MoviesAndShowsCatalog.User.Domain.Enums;
-using MoviesAndShowsCatalog.User.Domain.Services;
-using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.DTOs;
-using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.DTOs;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.Interfaces;
-using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
-using MoviesAndShowsCatalog.User.Domain.UseCases.SignUp.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Notifications.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Notifications.UseCases;
+using MoviesAndShowsCatalog.User.Domain.Users.Data;
+using MoviesAndShowsCatalog.User.Domain.Users.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Users.UseCases;
 using MoviesAndShowsCatalog.User.Domain.Util;
+using MoviesAndShowsCatalog.User.Domain.Util.Enums;
+using MoviesAndShowsCatalog.User.Domain.Util.Services;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class UserController(
-    IUserData userData,
+    IUserRepository userData,
     ITokenService tokenService,
     ISetGenrePreferences setGenrePreferences,
     IGetGenrePreferences getGenrePreferences,
     IBearerTokenUtils bearerTokenUtils,
-    IGetNotifications getNotifications) : ControllerBase
+    IGetNotificationsUseCase getNotifications) : ControllerBase
 {
     [HttpPost("signUp")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
@@ -32,13 +30,13 @@ public class UserController(
             Username = registerRequest.Username,
             Password = registerRequest.Password
         };
-        Domain.Entities.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
+        Domain.Users.Entities.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
         if (userAlreadyExistsInDatabase is not null)
         {
             return BadRequest("The user has already been register.");
         }
 
-        Domain.Entities.User user = new(
+        Domain.Users.Entities.User user = new(
                 username: registerRequest.Username, 
                 password: registerRequest.Password, 
                 role: Role.Commom
@@ -52,7 +50,7 @@ public class UserController(
     [ProducesResponseType(typeof(SignInResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> SignIn(SignInRequest user)
     {
-        Domain.Entities.User? userFromDatabase = await userData.Login(user);
+        Domain.Users.Entities.User? userFromDatabase = await userData.Login(user);
 
         if (userFromDatabase is null)
         {
@@ -72,7 +70,7 @@ public class UserController(
     [HttpGet("notifications")]
     [Authorize]
     [ProducesResponseType(typeof(IEnumerable<NotificationResponse>), StatusCodes.Status200OK)]
-    public IActionResult GetNotificationsAsync()
+    public async Task<IActionResult> GetNotificationsAsync()
     {
         int userId;
         try
@@ -87,7 +85,7 @@ public class UserController(
             return Unauthorized();
         }
 
-        IEnumerable<NotificationResponse> notifications = getNotifications.Execute(userId);
+        IEnumerable<NotificationResponse> notifications = await getNotifications.ExecuteAsync(userId);
 
         return Ok(notifications);
     }

@@ -4,12 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoviesAndShowsCatalog.User.Application.Services;
 using MoviesAndShowsCatalog.User.Application.UseCases;
-using MoviesAndShowsCatalog.User.Domain.Data;
+using MoviesAndShowsCatalog.User.Domain.Notifications.Data;
+using MoviesAndShowsCatalog.User.Domain.Notifications.UseCases;
 using MoviesAndShowsCatalog.User.Domain.RabbitMQ;
-using MoviesAndShowsCatalog.User.Domain.Services;
-using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.Interfaces;
+using MoviesAndShowsCatalog.User.Domain.Users.Data;
+using MoviesAndShowsCatalog.User.Domain.Users.UseCases;
 using MoviesAndShowsCatalog.User.Domain.Util;
+using MoviesAndShowsCatalog.User.Domain.Util.Services;
 using MoviesAndShowsCatalog.User.Infrastructure.Data;
 using MoviesAndShowsCatalog.User.Infrastructure.RabbitMQ;
 using System.Text;
@@ -73,8 +74,8 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 builder.Services
     .AddSingleton<IEventProcessor, EventProcessor>()
     //Repositories
-    .AddScoped<IUserData, UserData>()
-    .AddScoped<INotificationData, NotificationData>()
+    .AddScoped<IUserRepository, UserData>()
+    .AddScoped<INotificationRepository, NotificationRepository>()
     //RabbitMQ
     .AddSingleton<ConfigRabbitMQ>()
     .AddHostedService<RabbitMQSubscriber>()
@@ -82,11 +83,11 @@ builder.Services
     .AddScoped<ISettings, Settings>()
     .AddScoped<ITokenService, TokenService>()
     .AddScoped<IBearerTokenUtils, BearerTokenUtils>()
-    .AddScoped<INotificationService, NotificationService>()
+    .AddScoped<ITriggerNotificationsUseCase, TriggerNotificationsUseCase>()
     //UseCases
     .AddScoped<ISetGenrePreferences, SetGenrePreferences>()
     .AddScoped<IGetGenrePreferences, GetGenrePreferences>()
-    .AddScoped<IGetNotifications, GetNotifications>();
+    .AddScoped<IGetNotificationsUseCase, GetNotifications>();
 
 var app = builder.Build();
 

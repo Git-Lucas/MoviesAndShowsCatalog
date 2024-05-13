@@ -1,6 +1,6 @@
-﻿using MoviesAndShowsCatalog.User.Domain.Entities;
+﻿using MoviesAndShowsCatalog.User.Domain.Notifications.UseCases;
 using MoviesAndShowsCatalog.User.Domain.RabbitMQ;
-using MoviesAndShowsCatalog.User.Domain.Services;
+using MoviesAndShowsCatalog.User.Domain.VisualProductions.Entities;
 using System.Text.Json;
 
 namespace MoviesAndShowsCatalog.User.Infrastructure.RabbitMQ;
@@ -40,9 +40,9 @@ public class EventProcessor : IEventProcessor
             ?? throw new Exception("It was not possible to convert the message.");
 
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
-        INotificationService notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+        ITriggerNotificationsUseCase notificationService = scope.ServiceProvider.GetRequiredService<ITriggerNotificationsUseCase>();
 
-        await notificationService.TriggerNotificationsAsync(visualProduction);
+        await notificationService.ExecuteAsync(visualProduction);
 
         _logger.LogInformation($"Triggered notifications for gender '{visualProduction.Genre}'.");
     }

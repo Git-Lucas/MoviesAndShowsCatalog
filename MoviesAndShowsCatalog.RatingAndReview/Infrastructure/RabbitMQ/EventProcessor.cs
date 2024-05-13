@@ -1,6 +1,6 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.Entities;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Entities;
 using System.Text.Json;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;

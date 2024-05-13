@@ -1,5 +1,5 @@
-﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
+﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;

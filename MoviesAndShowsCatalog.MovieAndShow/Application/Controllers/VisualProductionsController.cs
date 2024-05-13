@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.DTOs;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Enums;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.Util.DTOs;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.Util.Enums;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.DTOs;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Application.Controllers;
 

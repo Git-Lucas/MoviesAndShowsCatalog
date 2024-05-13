@@ -1,6 +1,6 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.DTOs;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.DTOs;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.UseCases;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Application.UseCases;
 
@@ -8,7 +8,7 @@ public class GetWorstRatedVisualProduction(IRatingAndReviewData ratingAndReviewD
 {
     public GetRatingsAndReviewsResponse Execute()
     {
-        IEnumerable<Domain.Entities.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAll();
+        IEnumerable<Domain.RatingsAndReviews.Entities.RatingAndReview> ratingsAndReviews = ratingAndReviewData.GetAll();
         GetRatingsAndReviewsResponse getRatingsAndReviewsResponse = ratingsAndReviews
             .GroupBy(x => x.VisualProductionId)
             .Select(x => new GetRatingsAndReviewsResponse(x.Key, x))
