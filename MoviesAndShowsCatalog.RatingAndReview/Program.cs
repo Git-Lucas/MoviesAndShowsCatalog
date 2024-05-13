@@ -72,6 +72,7 @@ builder.Services
     .AddScoped<IVisualProductionData, VisualProductionData>()
     .AddScoped<IRatingAndReviewData, RatingAndReviewData>()
     //RabbitMQ
+    .AddSingleton<ConfigRabbitMQ>()
     .AddHostedService<RabbitMQSubscriber>()
     //UseCases
     .AddScoped<ICreateRatingAndReview, CreateRatingAndReview>()

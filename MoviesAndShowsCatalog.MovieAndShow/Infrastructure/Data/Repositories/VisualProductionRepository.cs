@@ -2,9 +2,9 @@
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
+namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data.Repositories;
 
-public class VisualProductionData(DatabaseContext context) : IVisualProductionData
+public class VisualProductionRepository(DatabaseContext context) : IVisualProductionRepository
 {
     public async Task CreateAsync(VisualProduction visualProduction)
     {
@@ -15,6 +15,7 @@ public class VisualProductionData(DatabaseContext context) : IVisualProductionDa
     public async Task<IEnumerable<VisualProduction>> GetAllAsync(int skip, int take)
     {
         return await context.VisualProductions
+            .OrderBy(x => x.Id)
             .Skip(skip)
             .Take(take)
             .ToListAsync();

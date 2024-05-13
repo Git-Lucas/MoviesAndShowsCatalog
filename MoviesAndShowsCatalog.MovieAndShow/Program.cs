@@ -6,6 +6,7 @@ using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Util;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data.Repositories;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
 using System.Text;
 
@@ -64,8 +65,9 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services
-    .AddScoped<IVisualProductionData, VisualProductionData>()
-    .AddScoped<IRabbitMQClient, RabbitMQClient>();
+    .AddScoped<IVisualProductionRepository, VisualProductionRepository>()
+    .AddScoped<ConfigRabbitMQ>()
+    .AddScoped<IRabbitMQProducer, RabbitMQProducer>();
 
 var app = builder.Build();
 

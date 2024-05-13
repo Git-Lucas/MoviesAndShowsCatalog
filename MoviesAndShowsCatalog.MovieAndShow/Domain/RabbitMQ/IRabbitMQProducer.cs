@@ -2,7 +2,7 @@
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 
-public interface IRabbitMQClient
+public interface IRabbitMQProducer
 {
     void VisualProductionCreated(VisualProduction visualProduction);
     void VisualProductionDeleted(int visualProductionId);

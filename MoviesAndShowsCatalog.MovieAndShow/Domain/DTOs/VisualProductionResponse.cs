@@ -1,9 +1,5 @@
 ﻿namespace MoviesAndShowsCatalog.MovieAndShow.Domain.DTOs;
 
-public record VisualProductionResponse
+public record VisualProductionResponse(int Id, string Title, string Genre, int ReleaseYear)
 {
-    public int Id { get; set; }
-    public required string Title { get; set; }
-    public required string Genre { get; set; }
-    public int ReleaseYear { get; set; }
 }
