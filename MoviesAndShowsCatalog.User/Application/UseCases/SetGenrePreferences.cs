@@ -4,7 +4,7 @@ using MoviesAndShowsCatalog.User.Domain.Users.UseCases;
 
 namespace MoviesAndShowsCatalog.User.Application.UseCases;
 
-public class SetGenrePreferences(IUserRepository userData) : ISetGenrePreferences
+public class SetGenrePreferences(IUserRepository userData) : ISetGenrePreferencesUseCase
 {
     public async Task ExecuteAsync(SetGenrePreferencesRequest setGenrePreferencesRequest)
     {

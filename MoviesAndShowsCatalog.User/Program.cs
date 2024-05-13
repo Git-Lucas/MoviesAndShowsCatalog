@@ -85,8 +85,8 @@ builder.Services
     .AddScoped<IBearerTokenUtils, BearerTokenUtils>()
     .AddScoped<ITriggerNotificationsUseCase, TriggerNotificationsUseCase>()
     //UseCases
-    .AddScoped<ISetGenrePreferences, SetGenrePreferences>()
-    .AddScoped<IGetGenrePreferences, GetGenrePreferences>()
+    .AddScoped<ISetGenrePreferencesUseCase, SetGenrePreferences>()
+    .AddScoped<IGetGenrePreferencesUseCase, GetGenrePreferences>()
     .AddScoped<IGetNotificationsUseCase, GetNotifications>();
 
 var app = builder.Build();

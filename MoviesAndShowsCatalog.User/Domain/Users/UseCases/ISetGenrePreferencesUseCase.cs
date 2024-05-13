@@ -2,7 +2,7 @@
 
 namespace MoviesAndShowsCatalog.User.Domain.Users.UseCases;
 
-public interface ISetGenrePreferences
+public interface ISetGenrePreferencesUseCase
 {
     Task ExecuteAsync(SetGenrePreferencesRequest setGenrePreferencesRequest);
 }

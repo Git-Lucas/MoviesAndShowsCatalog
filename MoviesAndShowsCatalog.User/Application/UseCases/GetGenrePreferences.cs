@@ -3,7 +3,7 @@ using MoviesAndShowsCatalog.User.Domain.Users.UseCases;
 
 namespace MoviesAndShowsCatalog.User.Application.UseCases;
 
-public class GetGenrePreferences(IUserRepository userData) : IGetGenrePreferences
+public class GetGenrePreferences(IUserRepository userData) : IGetGenrePreferencesUseCase
 {
     public async Task<string[]> ExecuteAsync(int userId)
     {
