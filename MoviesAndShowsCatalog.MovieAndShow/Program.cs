@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Util;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Events;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data.Repositories;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
@@ -67,7 +68,9 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
 builder.Services
     .AddScoped<IVisualProductionRepository, VisualProductionRepository>()
     .AddScoped<ConfigRabbitMQ>()
-    .AddScoped<IRabbitMQProducer, RabbitMQProducer>();
+    .AddScoped<IRabbitMQProducer, RabbitMQProducer>()
+    .AddScoped<VisualProductionCreated>()
+    .AddScoped<VisualProductionDeleted>();
 
 var app = builder.Build();
 
