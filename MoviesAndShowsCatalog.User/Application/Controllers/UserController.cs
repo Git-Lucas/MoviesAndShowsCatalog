@@ -1,28 +1,34 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.User.Domain.Data;
-using MoviesAndShowsCatalog.User.Domain.Enums;
-using MoviesAndShowsCatalog.User.Domain.Services;
-using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.DTOs;
-using MoviesAndShowsCatalog.User.Domain.UseCases.GenrePreferences.Interfaces;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.DTOs;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.Interfaces;
-using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
-using MoviesAndShowsCatalog.User.Domain.UseCases.SignUp.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Notifications.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Notifications.UseCases;
+using MoviesAndShowsCatalog.User.Domain.Users.Data;
+using MoviesAndShowsCatalog.User.Domain.Users.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Users.UseCases;
 using MoviesAndShowsCatalog.User.Domain.Util;
+using MoviesAndShowsCatalog.User.Domain.Util.Enums;
+using MoviesAndShowsCatalog.User.Domain.Util.Services;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class UserController(
-    IUserData userData,
+    IUserRepository userRepository,
     ITokenService tokenService,
-    ISetGenrePreferences setGenrePreferences,
-    IGetGenrePreferences getGenrePreferences,
+    ISetGenrePreferencesUseCase setGenrePreferencesUseCase,
+    IGetGenrePreferencesUseCase getGenrePreferencesUseCase,
     IBearerTokenUtils bearerTokenUtils,
-    IGetNotifications getNotifications) : ControllerBase
+    IGetNotificationsUseCase getNotificationsUseCase) 
+    : ControllerBase
 {
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly ITokenService _tokenService = tokenService;
+    private readonly ISetGenrePreferencesUseCase _setGenrePreferencesUseCase = setGenrePreferencesUseCase;
+    private readonly IGetGenrePreferencesUseCase _getGenrePreferencesUseCase = getGenrePreferencesUseCase;
+    private readonly IBearerTokenUtils _bearerTokenUtils = bearerTokenUtils;
+    private readonly IGetNotificationsUseCase _getNotificationsUseCase = getNotificationsUseCase;
+
     [HttpPost("signUp")]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     public async Task<IActionResult> SignUp(SignUpRequest registerRequest)
@@ -32,18 +38,18 @@ public class UserController(
             Username = registerRequest.Username,
             Password = registerRequest.Password
         };
-        Domain.Entities.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
+        Domain.Users.Entities.User? userAlreadyExistsInDatabase = await _userRepository.Login(loginRequest);
         if (userAlreadyExistsInDatabase is not null)
         {
             return BadRequest("The user has already been register.");
         }
 
-        Domain.Entities.User user = new(
+        Domain.Users.Entities.User user = new(
                 username: registerRequest.Username, 
                 password: registerRequest.Password, 
                 role: Role.Commom
             );
-        int createdUserId = await userData.CreateAsync(user);
+        int createdUserId = await _userRepository.CreateAsync(user);
 
         return Created(string.Empty, createdUserId);
     }
@@ -52,7 +58,7 @@ public class UserController(
     [ProducesResponseType(typeof(SignInResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> SignIn(SignInRequest user)
     {
-        Domain.Entities.User? userFromDatabase = await userData.Login(user);
+        Domain.Users.Entities.User? userFromDatabase = await _userRepository.Login(user);
 
         if (userFromDatabase is null)
         {
@@ -63,7 +69,7 @@ public class UserController(
         {
             Id = userFromDatabase.Id,
             Username = userFromDatabase.Username,
-            Token = tokenService.GenerateToken(userFromDatabase)
+            Token = _tokenService.GenerateToken(userFromDatabase)
         };
 
         return Ok(loginResponse);
@@ -72,7 +78,7 @@ public class UserController(
     [HttpGet("notifications")]
     [Authorize]
     [ProducesResponseType(typeof(IEnumerable<NotificationResponse>), StatusCodes.Status200OK)]
-    public IActionResult GetNotificationsAsync()
+    public async Task<IActionResult> GetNotificationsAsync()
     {
         int userId;
         try
@@ -80,14 +86,14 @@ public class UserController(
             string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
             string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-            userId = bearerTokenUtils.GetUserIdByToken(bearerToken);
+            userId = _bearerTokenUtils.GetUserIdByToken(bearerToken);
         }
         catch (Exception)
         {
             return Unauthorized();
         }
 
-        IEnumerable<NotificationResponse> notifications = getNotifications.Execute(userId);
+        IEnumerable<NotificationResponse> notifications = await _getNotificationsUseCase.ExecuteAsync(userId);
 
         return Ok(notifications);
     }
@@ -103,7 +109,7 @@ public class UserController(
             string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
             string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-            userId = bearerTokenUtils.GetUserIdByToken(bearerToken);
+            userId = _bearerTokenUtils.GetUserIdByToken(bearerToken);
             setGenrePreferencesRequest.SetUserId(userId);
         }
         catch (Exception)
@@ -111,7 +117,7 @@ public class UserController(
             return Unauthorized();
         }
 
-        await setGenrePreferences.ExecuteAsync(setGenrePreferencesRequest);
+        await _setGenrePreferencesUseCase.ExecuteAsync(setGenrePreferencesRequest);
         return NoContent();
     }
 
@@ -126,14 +132,14 @@ public class UserController(
             string authorizationHeader = HttpContext.Request.Headers.Authorization.ToString();
             string bearerToken = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-            userId = bearerTokenUtils.GetUserIdByToken(bearerToken);
+            userId = _bearerTokenUtils.GetUserIdByToken(bearerToken);
         }
         catch (Exception)
         {
             return Unauthorized();
         }
 
-        string[] genrePreferencesByUserId = await getGenrePreferences.ExecuteAsync(userId);
+        string[] genrePreferencesByUserId = await _getGenrePreferencesUseCase.ExecuteAsync(userId);
         return Ok(genrePreferencesByUserId);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.DTOs;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.DTOs;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.UseCases;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Application.Controllers;
 

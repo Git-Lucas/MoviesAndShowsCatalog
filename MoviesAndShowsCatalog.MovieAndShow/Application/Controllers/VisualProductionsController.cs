@@ -1,28 +1,44 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Data;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.DTOs;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Enums;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.Util.DTOs;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.Util.Enums;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.DTOs;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Events;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Application.Controllers;
 
 [ApiController]
 [Route("visualProductions")]
-public class VisualProductionsController(IVisualProductionRepository visualProductionRepository) : ControllerBase
+public class VisualProductionsController : ControllerBase, IVisualProductionCreated, IVisualProductionDeleted
 {
-    private readonly IVisualProductionRepository _visualProductionRepository = visualProductionRepository;
+    private readonly IVisualProductionRepository _visualProductionRepository;
+
+    public event Action<VisualProduction> OnVisualProductionCreated;
+    public event Action<int> OnVisualProductionDeleted;
+
+    public VisualProductionsController(IVisualProductionRepository visualProductionRepository, 
+                                       VisualProductionCreated visualProductionCreated,
+                                       VisualProductionDeleted visualProductionDeleted)
+    {
+        _visualProductionRepository = visualProductionRepository;
+
+        OnVisualProductionCreated += visualProductionCreated.OnVisualProductionCreatedPublishOnExchange;
+        OnVisualProductionDeleted += visualProductionDeleted.OnVisualProductionDeletedPublishOnExchange;
+    }
 
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<IActionResult> CreateAsync([FromServices] IRabbitMQProducer rabbitMQClient, [FromBody] CreateVisualProductionRequest createVisualProductionRequest)
+    public async Task<IActionResult> CreateAsync([FromBody] CreateVisualProductionRequest createVisualProductionRequest)
     {
         VisualProduction visualProduction = createVisualProductionRequest.ToEntity();
 
         await _visualProductionRepository.CreateAsync(visualProduction);
-        rabbitMQClient.VisualProductionCreated(visualProduction);
+        
+        OnVisualProductionCreated.Invoke(visualProduction);
 
         return Created(string.Empty, visualProduction.Id);
     }
@@ -72,7 +88,8 @@ public class VisualProductionsController(IVisualProductionRepository visualProdu
         }
 
         await _visualProductionRepository.DeleteAsync(visualProduction);
-        rabbitMQClient.VisualProductionDeleted(visualProductionId);
+
+        OnVisualProductionDeleted.Invoke(visualProductionId);
 
         return Ok();
     }

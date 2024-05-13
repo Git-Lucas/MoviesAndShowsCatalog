@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.User.Domain.Data;
-using MoviesAndShowsCatalog.User.Domain.Enums;
-using MoviesAndShowsCatalog.User.Domain.UseCases.SignIn.DTOs;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Users.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Users.Data;
+using MoviesAndShowsCatalog.User.Domain.Users.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Util.Enums;
 
 namespace MoviesAndShowsCatalog.User.Application.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 [Authorize(Roles = nameof(Role.Administrator))]
-public class UsersController(IUserData userData) : ControllerBase
+public class UsersController(IUserRepository userData) : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(typeof(int), StatusCodes.Status201Created)]
@@ -21,13 +20,13 @@ public class UsersController(IUserData userData) : ControllerBase
             Username = createOrUpdateUserRequest.Username,
             Password = createOrUpdateUserRequest.Password
         };
-        Domain.Entities.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
+        Domain.Users.Entities.User? userAlreadyExistsInDatabase = await userData.Login(loginRequest);
         if (userAlreadyExistsInDatabase is not null)
         {
             return BadRequest("The user has already been register.");
         }
 
-        Domain.Entities.User userEntity = new(
+        Domain.Users.Entities.User userEntity = new(
                 username: createOrUpdateUserRequest.Username,
                 password: createOrUpdateUserRequest.Password,
                 role: createOrUpdateUserRequest.Role
@@ -41,10 +40,10 @@ public class UsersController(IUserData userData) : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<GetUserResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllAsync()
     {
-        IEnumerable<Domain.Entities.User> usersEntitiesFromDatabase = await userData.GetAllAsync();
+        IEnumerable<Domain.Users.Entities.User> usersEntitiesFromDatabase = await userData.GetAllAsync();
 
         List<GetUserResponse> usersResponse = [];
-        foreach (Domain.Entities.User user in usersEntitiesFromDatabase)
+        foreach (Domain.Users.Entities.User user in usersEntitiesFromDatabase)
         {
             usersResponse.Add(
                     new()
@@ -70,7 +69,7 @@ public class UsersController(IUserData userData) : ControllerBase
             BadRequest("Action not allowed (information conflict).");
         }
 
-        Domain.Entities.User userFromDatabase = await userData.GetByIdAsync(userId);
+        Domain.Users.Entities.User userFromDatabase = await userData.GetByIdAsync(userId);
         userFromDatabase.Update(createOrUpdateUserRequest);
         await userData.UpdateAsync(userFromDatabase);
         return NoContent();

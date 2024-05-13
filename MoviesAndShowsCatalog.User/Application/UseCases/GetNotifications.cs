@@ -1,15 +1,15 @@
-﻿using MoviesAndShowsCatalog.User.Domain.Data;
-using MoviesAndShowsCatalog.User.Domain.Entities;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.DTOs;
-using MoviesAndShowsCatalog.User.Domain.UseCases.Notifications.Interfaces;
+﻿using MoviesAndShowsCatalog.User.Domain.Notifications.Data;
+using MoviesAndShowsCatalog.User.Domain.Notifications.DTOs;
+using MoviesAndShowsCatalog.User.Domain.Notifications.Entities;
+using MoviesAndShowsCatalog.User.Domain.Notifications.UseCases;
 
 namespace MoviesAndShowsCatalog.User.Application.UseCases;
 
-public class GetNotifications(INotificationData notificationsData) : IGetNotifications
+public class GetNotifications(INotificationRepository notificationsRepository) : IGetNotificationsUseCase
 {
-    public IEnumerable<NotificationResponse> Execute(int userId)
+    public async Task<IEnumerable<NotificationResponse>> ExecuteAsync(int userId)
     {
-        IEnumerable<Notification> notificationsUser = notificationsData.GetByUserId(userId);
+        IEnumerable<Notification> notificationsUser = await notificationsRepository.GetByUserId(userId);
 
         List<NotificationResponse> notificationsResponse = [];
         foreach(Notification notification in notificationsUser)

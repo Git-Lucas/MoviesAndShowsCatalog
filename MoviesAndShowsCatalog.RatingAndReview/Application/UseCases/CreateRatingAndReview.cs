@@ -1,6 +1,7 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.DTOs;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.UseCases;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.DTOs;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.UseCases;
+using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Data;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Application.UseCases;
 
@@ -10,7 +11,7 @@ public class CreateRatingAndReview(IRatingAndReviewData ratingAndReviewData, IVi
     {
         await visualProductionData.GetByIdAsync(dtoCreateRatingAndReview.VisualProductionId);
 
-        Domain.Entities.RatingAndReview ratingAndReview = new(
+        Domain.RatingsAndReviews.Entities.RatingAndReview ratingAndReview = new(
             dtoCreateRatingAndReview.Id,
             dtoCreateRatingAndReview.Rating,
             dtoCreateRatingAndReview.Review,

@@ -1,5 +1,4 @@
-﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
+﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
@@ -32,45 +31,22 @@ public class RabbitMQProducer : IRabbitMQProducer
         }
     }
 
-    public void VisualProductionCreated(VisualProduction visualProduction)
+    public void SendMessage<T>(T message, string routingKey)
     {
         try
         {
-            string message = JsonSerializer.Serialize(visualProduction);
-            byte[] body = Encoding.UTF8.GetBytes(message);
+            string json = JsonSerializer.Serialize(message);
+            byte[] body = Encoding.UTF8.GetBytes(json);
 
             IBasicProperties props = _channel.CreateBasicProperties();
             props.Persistent = true;
 
             _channel.BasicPublish(exchange: _exchangeName,
-                                  routingKey: "Created",
+                                  routingKey: routingKey,
                                   basicProperties: props,
                                   body: body);
 
-            _logger.LogInformation($"Message published to the queue. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Unable to publish the message on exchange. Error: {ex.Message}");
-        }
-    }
-
-    public void VisualProductionDeleted(int visualProductionId)
-    {
-        try
-        {
-            string message = JsonSerializer.Serialize(visualProductionId);
-            byte[] body = Encoding.UTF8.GetBytes(message);
-
-            IBasicProperties props = _channel.CreateBasicProperties();
-            props.Persistent = true;
-
-            _channel.BasicPublish(exchange: _exchangeName,
-                                  routingKey: "Deleted",
-                                  basicProperties: props,
-                                  body: body);
-
-            _logger.LogInformation($"Message published to the queue. (ID: {visualProductionId} | DateTime: {DateTime.Now})");
+            _logger.LogInformation($"Message published to the queue. (Message: {json} | DateTime: {DateTime.Now})");
         }
         catch (Exception ex)
         {

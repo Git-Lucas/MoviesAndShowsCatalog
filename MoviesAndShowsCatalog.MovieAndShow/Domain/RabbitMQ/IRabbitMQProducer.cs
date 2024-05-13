@@ -1,9 +1,6 @@
-﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.Entities;
-
-namespace MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
+﻿namespace MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 
 public interface IRabbitMQProducer
 {
-    void VisualProductionCreated(VisualProduction visualProduction);
-    void VisualProductionDeleted(int visualProductionId);
+    void SendMessage<T>(T message, string routingKey);
 }
