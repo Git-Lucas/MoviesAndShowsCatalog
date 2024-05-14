@@ -1,5 +1,8 @@
-﻿namespace MoviesAndShowsCatalog.User.Domain.VisualProductions.Enums;
+﻿using NetEscapades.EnumGenerators;
 
+namespace MoviesAndShowsCatalog.User.Domain.VisualProductions.Enums;
+
+[EnumExtensions]
 public enum Genre
 {
     Action,

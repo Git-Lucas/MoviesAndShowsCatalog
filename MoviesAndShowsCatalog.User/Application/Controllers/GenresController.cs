@@ -11,8 +11,8 @@ public class GenresController : ControllerBase
     [ProducesResponseType(typeof(Dictionary<int, string>), StatusCodes.Status200OK)]
     public IActionResult GetAll()
     {
-        Dictionary<int, string> genres = Enum
-            .GetValues(typeof(Genre))
+        Dictionary<int, string> genres = GenreExtensions
+            .GetValues()
             .Cast<Genre>()
             .ToDictionary(x => (int)x, x => x.ToString());
         return Ok(genres);
