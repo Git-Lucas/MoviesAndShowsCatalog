@@ -16,7 +16,7 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
             .HasConversion(
                 x => string.Join(",", x),
                 x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(x => Enum.Parse(typeof(Genre), x))
+                    .Select(x => Enum.Parse<Genre>(x))
                     .Cast<Genre>()
                     .ToList()
                 );
