@@ -5,30 +5,28 @@ namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
 public class ConfigRabbitMQ
 {
     private readonly ConnectionFactory _factory;
-    private readonly IConnection? _connection;
 
-    public ConfigRabbitMQ(ILogger<ConfigRabbitMQ> logger, IConfiguration configuration)
+    public ConfigRabbitMQ(IConfiguration configuration)
     {
-        _factory = new ConnectionFactory()
+        _factory = new()
         {
-            HostName = configuration["RabbitMQ:Host"],
+            HostName = configuration["RabbitMQ:Host"]!,
             Port = int.Parse(configuration["RabbitMQ:Port"]!),
-            UserName = configuration["RabbitMQ:UserName"],
-            Password = configuration["RabbitMQ:Password"]
+            UserName = configuration["RabbitMQ:UserName"]!,
+            Password = configuration["RabbitMQ:Password"]!
         };
+    }
 
+    public async Task<IChannel> CreateChannelAsync()
+    {
         try
         {
-            _connection = _factory.CreateConnection();
+            IConnection connection = await _factory.CreateConnectionAsync();
+            return await connection.CreateChannelAsync();
         }
         catch (Exception ex)
         {
-            logger.LogError($"Unable to create connection. MessageError: {ex.Message}");
+            throw new InvalidOperationException($"Unable to create connection. MessageError: {ex.Message}", ex);
         }
-    }
-
-    public IModel CreateModel()
-    {
-        return _connection!.CreateModel();
     }
 }

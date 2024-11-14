@@ -5,52 +5,55 @@ using System.Text.Json;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
 
-public class RabbitMQProducer : IRabbitMQProducer
+public class RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ config) : IRabbitMQProducer
 {
-    private readonly ILogger<RabbitMQProducer> _logger;
-    private readonly IModel _channel;
+    private readonly ILogger<RabbitMQProducer> _logger = logger;
+    private readonly ConfigRabbitMQ _config = config;
+    private IChannel? _channel;
     private readonly string _exchangeName = "VisualProductionExchange";
 
-    public RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ config)
+    public async Task ConnectAsync()
     {
-        _logger = logger;
-
-        _channel = config.CreateModel();
+        _channel = await _config.CreateChannelAsync();
 
         try
         {
-            _channel.ExchangeDeclare(exchange: _exchangeName,
-                                     type: ExchangeType.Topic,
-                                     durable: true,
-                                     autoDelete: false,
-                                     arguments: null);
+            await _channel.ExchangeDeclareAsync(exchange: _exchangeName,
+                                                type: ExchangeType.Topic,
+                                                 durable: true,
+                                                 autoDelete: false,
+                                                 arguments: null);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Unable to declare exchange. Error: {ex.Message}");
+            throw new InvalidOperationException($"Unable to declare exchange. Error: {ex.Message}", ex);
         }
     }
 
-    public void SendMessage<T>(T message, string routingKey)
+    public async Task SendMessage<T>(T message, string routingKey)
     {
         try
         {
             string json = JsonSerializer.Serialize(message);
             byte[] body = Encoding.UTF8.GetBytes(json);
 
-            IBasicProperties props = _channel.CreateBasicProperties();
+            BasicProperties props = new()
+            {
+                Persistent = true,
+            };
             props.Persistent = true;
 
-            _channel.BasicPublish(exchange: _exchangeName,
-                                  routingKey: routingKey,
-                                  basicProperties: props,
-                                  body: body);
+            await _channel!.BasicPublishAsync(exchange: _exchangeName,
+                                              routingKey: routingKey,
+                                              mandatory: true,
+                                              basicProperties: props,
+                                              body: body);
 
-            _logger.LogInformation($"Message published to the queue. (Message: {json} | DateTime: {DateTime.Now})");
+            _logger.LogInformation("Message published to the queue. (Message: {Json} | DateTime: {DateTimeNow})", json, DateTime.Now);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Unable to publish the message on exchange. Error: {ex.Message}");
+            _logger.LogError(ex, "Unable to publish the message on exchange. Error: {Message}", ex.Message);
         }
     }
 }

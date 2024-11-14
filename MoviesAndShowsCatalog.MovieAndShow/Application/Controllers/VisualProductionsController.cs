@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Util.DTOs;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.Util.Enums;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Data;
@@ -78,7 +77,7 @@ public class VisualProductionsController : ControllerBase, IVisualProductionCrea
 
     [HttpDelete("{visualProductionId:int}")]
     [Authorize(Roles = nameof(Role.Administrator))]
-    public async Task<IActionResult> DeleteAsync([FromServices] IRabbitMQProducer rabbitMQClient, [FromRoute] int visualProductionId)
+    public async Task<IActionResult> DeleteAsync([FromRoute] int visualProductionId)
     {
         VisualProduction? visualProduction = await _visualProductionRepository.GetByIdAsync(visualProductionId);
 

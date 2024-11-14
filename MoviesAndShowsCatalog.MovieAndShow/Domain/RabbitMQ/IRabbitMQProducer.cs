@@ -2,5 +2,6 @@
 
 public interface IRabbitMQProducer
 {
-    void SendMessage<T>(T message, string routingKey);
+    Task ConnectAsync();
+    Task SendMessage<T>(T message, string routingKey);
 }
