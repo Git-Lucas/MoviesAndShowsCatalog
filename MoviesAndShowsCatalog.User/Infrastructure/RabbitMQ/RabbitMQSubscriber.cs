@@ -5,50 +5,47 @@ using System.Text;
 
 namespace MoviesAndShowsCatalog.User.Infrastructure.RabbitMQ;
 
-public class RabbitMQSubscriber : BackgroundService
+public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, IEventProcessor eventProcessor) : BackgroundService
 {
-    private readonly ILogger<RabbitMQSubscriber> _logger;
-    private readonly IEventProcessor _eventProcessor;
-    private readonly IModel _channel;
+    private readonly ILogger<RabbitMQSubscriber> _logger = logger;
+    private readonly ConfigRabbitMQ _config = config;
+    private readonly IEventProcessor _eventProcessor = eventProcessor;
     private readonly string _exchangeName = "VisualProductionExchange";
-    private readonly string? _queueName = $"{nameof(User)}Queue";
+    private readonly string _queueName = $"{nameof(User)}Queue";
 
-    public RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, IEventProcessor eventProcessor)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger = logger;
-        _eventProcessor = eventProcessor;
-
-        _channel = config.CreateModel();
+        IChannel channel = await _config.CreateChannelAsync();
 
         try
         {
-            _channel.ExchangeDeclare(exchange: _exchangeName,
-                                     type: ExchangeType.Topic,
-                                     durable: true,
-                                     autoDelete: false,
-                                     arguments: null);
+            await channel.ExchangeDeclareAsync(exchange: _exchangeName,
+                                                type: ExchangeType.Topic,
+                                                durable: true,
+                                                autoDelete: false,
+                                                arguments: null,
+                                                cancellationToken: CancellationToken.None);
 
-            _channel.QueueDeclare(queue: _queueName,
-                                  durable: true,
-                                  exclusive: false,
-                                  autoDelete: false,
-                                  arguments: null);
+            await channel.QueueDeclareAsync(queue: _queueName,
+                                             durable: true,
+                                             exclusive: false,
+                                             autoDelete: false,
+                                             arguments: null,
+                                             cancellationToken: CancellationToken.None);
 
-            _channel.QueueBind(queue: _queueName,
-                               exchange: _exchangeName,
-                               routingKey: "Created");
+            await channel.QueueBindAsync(queue: _queueName,
+                                          exchange: _exchangeName,
+                                          routingKey: "Created",
+                                          cancellationToken: CancellationToken.None);
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Unable to configure the initial RabbitMQ settings. Error: {ex.Message}");
+            throw new InvalidOperationException($"Unable to configure the initial RabbitMQ settings. Error: {ex.Message}", ex);
         }
-    }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        EventingBasicConsumer consumer = new(_channel);
+        AsyncEventingBasicConsumer consumer = new(channel);
 
-        consumer.Received += (ModuleHandle, ea) =>
+        consumer.ReceivedAsync += async (ModuleHandle, ea) =>
         {
             byte[] body = ea.Body.ToArray();
             string message = Encoding.UTF8.GetString(body);
@@ -57,18 +54,16 @@ public class RabbitMQSubscriber : BackgroundService
             {
                 _eventProcessor.ProcessAsync(ea.RoutingKey, message);
 
-                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Unable to process the message: '{message}'. Error: {ex.Message}");
+                _logger.LogError(ex, "Unable to process the message: '{ReceivedMessage}'. Error: {ErrorMessage}", message, ex.Message);
             }
         };
 
-        _channel.BasicConsume(queue: _queueName,
-                              autoAck: false,
-                              consumer: consumer);
-
-        return Task.CompletedTask;
+        await channel.BasicConsumeAsync(queue: _queueName,
+                                        autoAck: false,
+                                        consumer: consumer);
     }
 }
