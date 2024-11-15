@@ -9,29 +9,12 @@ public class RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ c
 {
     private readonly ILogger<RabbitMQProducer> _logger = logger;
     private readonly ConfigRabbitMQ _config = config;
-    private IChannel? _channel;
     private readonly string _exchangeName = "VisualProductionExchange";
-
-    public async Task ConnectAsync()
-    {
-        _channel = await _config.CreateChannelAsync();
-
-        try
-        {
-            await _channel.ExchangeDeclareAsync(exchange: _exchangeName,
-                                                type: ExchangeType.Topic,
-                                                 durable: true,
-                                                 autoDelete: false,
-                                                 arguments: null);
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException($"Unable to declare exchange. Error: {ex.Message}", ex);
-        }
-    }
 
     public async Task SendMessage<T>(T message, string routingKey)
     {
+        IChannel channel = await ConnectAsync();
+
         try
         {
             string json = JsonSerializer.Serialize(message);
@@ -43,7 +26,7 @@ public class RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ c
             };
             props.Persistent = true;
 
-            await _channel!.BasicPublishAsync(exchange: _exchangeName,
+            await channel.BasicPublishAsync(exchange: _exchangeName,
                                               routingKey: routingKey,
                                               mandatory: true,
                                               basicProperties: props,
@@ -54,6 +37,26 @@ public class RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ c
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unable to publish the message on exchange. Error: {Message}", ex.Message);
+        }
+    }
+
+    private async Task<IChannel> ConnectAsync()
+    {
+        try
+        {
+            IChannel channel = await _config.CreateChannelAsync();
+
+            await channel.ExchangeDeclareAsync(exchange: _exchangeName,
+                                               type: ExchangeType.Topic,
+                                               durable: true,
+                                               autoDelete: false,
+                                               arguments: null);
+
+            return channel;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Unable to declare exchange. Error: {ex.Message}", ex);
         }
     }
 }

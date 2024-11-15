@@ -30,20 +30,20 @@ public class EventProcessor : IEventProcessor
         }
         else
         {
-            _logger.LogError($"The message received does not have a mapped function. Routing key: {routingKey}");
+            _logger.LogError("The message received does not have a mapped function. Routing key: {RoutingKey}", routingKey);
         }
     }
 
     public async Task TriggerNotificationsAsync(string message)
     {
         VisualProduction visualProduction = JsonSerializer.Deserialize<VisualProduction>(message)
-            ?? throw new Exception("It was not possible to convert the message.");
+            ?? throw new JsonException("It was not possible to convert the message.");
 
         using IServiceScope scope = _serviceScopeFactory.CreateScope();
         ITriggerNotificationsUseCase notificationService = scope.ServiceProvider.GetRequiredService<ITriggerNotificationsUseCase>();
 
         await notificationService.ExecuteAsync(visualProduction);
 
-        _logger.LogInformation($"Triggered notifications for gender '{visualProduction.Genre}'.");
+        _logger.LogInformation("Triggered notifications for gender '{VisualProductionGenre}'.", visualProduction.Genre);
     }
 }

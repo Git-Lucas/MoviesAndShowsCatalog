@@ -31,7 +31,7 @@ public class EventProcessor : IEventProcessor
         }
         else
         {
-            _logger.LogError($"The message received does not have a mapped function. Routing key: {routingKey}");
+            _logger.LogError("The message received does not have a mapped function. Routing key: {RoutingKey}", routingKey);
         }
     }
 
@@ -43,15 +43,16 @@ public class EventProcessor : IEventProcessor
             IVisualProductionData visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionData>();
 
             VisualProduction visualProduction = JsonSerializer.Deserialize<VisualProduction>(message)
-                ?? throw new Exception("It was not possible to convert the message.");
+                ?? throw new JsonException("It was not possible to convert the message.");
 
             await visualProductionData.CreateAsync(visualProduction);
 
-            _logger.LogInformation($"{nameof(VisualProduction)} registered sucessfully. (ID: {visualProduction.Id} | DateTime: {DateTime.Now})");
+            _logger.LogInformation("{EntityName} registered sucessfully. (ID: {VisualProductionId} | DateTime: {DateTimeNow})", 
+                                   nameof(VisualProduction), visualProduction.Id, DateTime.Now);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, ex.Message);
         }
     }
 
@@ -67,11 +68,12 @@ public class EventProcessor : IEventProcessor
             VisualProduction visualProductionFromDatabase = await visualProductionData.GetByIdAsync(visualProductionId);
             await visualProductionData.DeleteAsync(visualProductionFromDatabase);
 
-            _logger.LogInformation($"{nameof(VisualProduction)} deleted sucessfully. (ID: {visualProductionId} | DateTime: {DateTime.Now})");
+            _logger.LogInformation("{EntityName} deleted sucessfully. (ID: {VisualProductionId} | DateTime: {DateTimeNow})",
+                                   nameof(VisualProduction), visualProductionId, DateTime.Now);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, ex.Message);
         }
     }
 }

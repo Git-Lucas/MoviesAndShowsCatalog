@@ -15,10 +15,12 @@ public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbit
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        IChannel channel = await _config.CreateChannelAsync();
+        IChannel channel;
 
         try
         {
+            channel = await _config.CreateChannelAsync();
+
             await channel.ExchangeDeclareAsync(exchange: _exchangeName,
                                                 type: ExchangeType.Topic,
                                                 durable: true,
@@ -64,6 +66,7 @@ public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbit
 
         await channel.BasicConsumeAsync(queue: _queueName,
                                         autoAck: false,
-                                        consumer: consumer);
+                                        consumer: consumer,
+                                        cancellationToken: CancellationToken.None);
     }
 }
