@@ -1,6 +1,6 @@
 ﻿using RabbitMQ.Client;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
+namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.MessageQueue;
 
 public class ConfigRabbitMQ
 {

@@ -1,6 +1,6 @@
-﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.DTOs;
+﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
+namespace MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.DTOs;
 
 public static class VisualProductionExtensions
 {

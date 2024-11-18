@@ -1,6 +1,6 @@
 ﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Enums;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.DTOs;
+namespace MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.DTOs;
 
 public record CreateVisualProductionRequest
 {

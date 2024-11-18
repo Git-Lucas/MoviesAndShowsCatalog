@@ -1,4 +1,4 @@
-﻿namespace MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Events;
+﻿namespace MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Events;
 
 public interface IVisualProductionDeleted
 {

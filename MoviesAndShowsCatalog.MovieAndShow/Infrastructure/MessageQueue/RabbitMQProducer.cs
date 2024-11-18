@@ -1,11 +1,11 @@
-﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
+﻿using MoviesAndShowsCatalog.MovieAndShow.Application.MessageQueue;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
+namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.MessageQueue;
 
-public class RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ config) : IRabbitMQProducer
+public class RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ config) : IMessageQueueProducer
 {
     private readonly ILogger<RabbitMQProducer> _logger = logger;
     private readonly ConfigRabbitMQ _config = config;

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Data;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data.Repositories;
 
-public class VisualProductionRepository(DatabaseContext context) : IVisualProductionRepository
+public class VisualProductionEF(DatabaseContext context) : IVisualProductionRepository
 {
     public async Task CreateAsync(VisualProduction visualProduction)
     {

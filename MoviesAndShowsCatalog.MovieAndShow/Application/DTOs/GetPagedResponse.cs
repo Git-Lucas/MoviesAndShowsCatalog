@@ -1,4 +1,4 @@
-﻿namespace MoviesAndShowsCatalog.MovieAndShow.Domain.Util.DTOs;
+﻿namespace MoviesAndShowsCatalog.MovieAndShow.Application.DTOs;
 
 public class GetPagedResponse<T>(long countDataInDatabase, int skip, int take, IEnumerable<T> data) where T : class
 {

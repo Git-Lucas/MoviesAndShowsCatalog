@@ -2,21 +2,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.RabbitMQ;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.Util;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Data;
-using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Events;
+using MoviesAndShowsCatalog.MovieAndShow.Application.Authentication;
+using MoviesAndShowsCatalog.MovieAndShow.Application.MessageQueue;
+using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Events;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data.Repositories;
-using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.RabbitMQ;
+using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.MessageQueue;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-Settings settings = new();
-byte[] key = Encoding.ASCII.GetBytes(settings.Secret);
+byte[] key = Encoding.ASCII.GetBytes(Settings.Secret);
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -66,9 +65,9 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services
-    .AddScoped<IVisualProductionRepository, VisualProductionRepository>()
+    .AddScoped<IVisualProductionRepository, VisualProductionEF>()
     .AddScoped<ConfigRabbitMQ>()
-    .AddScoped<IRabbitMQProducer, RabbitMQProducer>()
+    .AddScoped<IMessageQueueProducer, RabbitMQProducer>()
     .AddScoped<VisualProductionCreated>()
     .AddScoped<VisualProductionDeleted>();
 

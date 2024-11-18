@@ -1,6 +1,6 @@
 ﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Data;
+namespace MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Data;
 
 public interface IVisualProductionRepository
 {
