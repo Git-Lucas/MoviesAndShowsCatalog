@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.MessageQueue;
 
-public class RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ config) : IMessageQueueProducer
+internal class RabbitMQProducer(ILogger<RabbitMQProducer> logger, ConfigRabbitMQ config) : IMessageQueueProducer
 {
     private readonly ILogger<RabbitMQProducer> _logger = logger;
     private readonly ConfigRabbitMQ _config = config;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Enums;
 
-namespace MoviesAndShowsCatalog.MovieAndShow.Application.Controllers;
+namespace MoviesAndShowsCatalog.MovieAndShow.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -13,7 +13,6 @@ public class GenresController : ControllerBase
     {
         Dictionary<int, string> genres = GenreExtensions
             .GetValues()
-            .Cast<Genre>()
             .ToDictionary(x => (int)x, x => x.ToString());
         return Ok(genres);
     }

@@ -4,7 +4,7 @@ using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data.Repositories;
 
-public class VisualProductionEF(DatabaseContext context) : IVisualProductionRepository
+internal class VisualProductionEF(DatabaseContext context) : IVisualProductionRepository
 {
     public async Task CreateAsync(VisualProduction visualProduction)
     {
@@ -21,9 +21,10 @@ public class VisualProductionEF(DatabaseContext context) : IVisualProductionRepo
             .ToListAsync();
     }
 
-    public async Task<VisualProduction?> GetByIdAsync(int visualProductionId)
+    public async Task<VisualProduction> GetByIdAsync(int visualProductionId)
     {
-        return await context.VisualProductions.FirstOrDefaultAsync(x => x.Id == visualProductionId);
+        return await context.VisualProductions.FirstOrDefaultAsync(x => x.Id == visualProductionId)
+            ?? throw new KeyNotFoundException($"The {nameof(VisualProduction)} was not found.");
     }
 
     public async Task DeleteAsync(VisualProduction visualProduction)

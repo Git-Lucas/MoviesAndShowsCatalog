@@ -2,13 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MoviesAndShowsCatalog.MovieAndShow.Application;
 using MoviesAndShowsCatalog.MovieAndShow.Application.Authentication;
-using MoviesAndShowsCatalog.MovieAndShow.Application.MessageQueue;
-using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Data;
-using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Events;
+using MoviesAndShowsCatalog.MovieAndShow.Infrastructure;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
-using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data.Repositories;
-using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.MessageQueue;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,11 +62,8 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services
-    .AddScoped<IVisualProductionRepository, VisualProductionEF>()
-    .AddScoped<ConfigRabbitMQ>()
-    .AddScoped<IMessageQueueProducer, RabbitMQProducer>()
-    .AddScoped<VisualProductionCreated>()
-    .AddScoped<VisualProductionDeleted>();
+    .AddInfrastructureServices()
+    .AddApplicationServices();
 
 var app = builder.Build();
 

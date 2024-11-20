@@ -2,7 +2,7 @@
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.MessageQueue;
 
-public class ConfigRabbitMQ
+internal class ConfigRabbitMQ
 {
     private readonly ConnectionFactory _factory;
 
