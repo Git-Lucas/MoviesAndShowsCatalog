@@ -2,6 +2,7 @@
 using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.DTOs;
 using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Events;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Enums;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.UseCases;
 
@@ -27,4 +28,8 @@ public class CreateVisualProduction : IVisualProductionCreated
 
         return entity.Id;
     }
+}
+
+public record CreateVisualProductionRequest(string Title, Genre Genre, int ReleaseYear)
+{
 }

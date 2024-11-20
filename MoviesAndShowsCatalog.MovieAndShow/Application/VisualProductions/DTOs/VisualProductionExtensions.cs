@@ -1,4 +1,5 @@
-﻿using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
+﻿using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.UseCases;
+using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.DTOs;
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.MovieAndShow.Application.DTOs;
+﻿using MoviesAndShowsCatalog.MovieAndShow.Application.DTOs;
 using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.Data;
 using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.DTOs;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
