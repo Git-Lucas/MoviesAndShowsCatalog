@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Application.VisualProductions.Data;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Entities;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Application.Controllers;
+namespace MoviesAndShowsCatalog.RatingAndReview.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class VisualProductionsController(IVisualProductionData visualProductionData) : ControllerBase
+public class VisualProductionsController(IVisualProductionRepository visualProductionData) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(List<VisualProduction>), StatusCodes.Status200OK)]

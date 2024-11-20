@@ -2,14 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MoviesAndShowsCatalog.RatingAndReview.Application.UseCases;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.UseCases;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.Util;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Application;
+using MoviesAndShowsCatalog.RatingAndReview.Application.Authentication;
+using MoviesAndShowsCatalog.RatingAndReview.Infrastructure;
 using MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,18 +64,8 @@ builder.Services.AddDbContext<DatabaseContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services
-    .AddSingleton<IEventProcessor, EventProcessor>()
-    //Repositories
-    .AddScoped<IVisualProductionData, VisualProductionData>()
-    .AddScoped<IRatingAndReviewData, RatingAndReviewData>()
-    //RabbitMQ
-    .AddSingleton<ConfigRabbitMQ>()
-    .AddHostedService<RabbitMQSubscriber>()
-    //UseCases
-    .AddScoped<ICreateRatingAndReview, CreateRatingAndReview>()
-    .AddScoped<IGetRatingsAndReviewsByVisualProductionId, GetRatingsAndReviewsByVisualProductionId>()
-    .AddScoped<IGetBestRatedVisualProduction, GetBestRatedVisualProduction>()
-    .AddScoped<IGetWorstRatedVisualProduction, GetWorstRatedVisualProduction>();
+    .AddInfrastructureServices()
+    .AddApplicationServices();
 
 var app = builder.Build();
 
@@ -96,4 +82,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

@@ -1,4 +1,4 @@
-﻿namespace MoviesAndShowsCatalog.RatingAndReview.Domain.Util;
+﻿namespace MoviesAndShowsCatalog.RatingAndReview.Application.Authentication;
 
 public class Settings
 {

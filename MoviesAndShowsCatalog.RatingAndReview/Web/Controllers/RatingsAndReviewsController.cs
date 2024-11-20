@@ -1,26 +1,22 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.DTOs;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.UseCases;
+using MoviesAndShowsCatalog.RatingAndReview.Application.RatingsAndReviews.DTOs;
+using MoviesAndShowsCatalog.RatingAndReview.Application.RatingsAndReviews.UseCases;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Application.Controllers;
+namespace MoviesAndShowsCatalog.RatingAndReview.Web.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RatingsAndReviewsController(
-    ICreateRatingAndReview createRatingAndReview,
-    IGetRatingsAndReviewsByVisualProductionId getRatingsAndReviewsByVisualProductionId,
-    IGetBestRatedVisualProduction getBestRatedVisualProduction,
-    IGetWorstRatedVisualProduction getWorstRatedVisualProduction) : ControllerBase
+public class RatingsAndReviewsController : ControllerBase
 {
     [HttpPost]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateAsync(CreateRatingAndReviewRequest createRatingAndReviewDTO)
+    public async Task<IActionResult> CreateAsync([FromServices] CreateRatingAndReview useCase, [FromBody] CreateRatingAndReviewRequest createRatingAndReviewDTO)
     {
         try
         {
-            await createRatingAndReview.ExecuteAsync(createRatingAndReviewDTO);
+            await useCase.ExecuteAsync(createRatingAndReviewDTO);
             return Created(string.Empty, string.Empty);
         }
         catch (Exception ex)
@@ -31,11 +27,11 @@ public class RatingsAndReviewsController(
 
     [HttpGet("{visualProductionId:int}")]
     [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllByVisualProductionIdAsync([FromRoute] int visualProductionId)
+    public async Task<IActionResult> GetAllByVisualProductionIdAsync([FromServices] GetRatingsAndReviewsByVisualProductionId useCase, [FromRoute] int visualProductionId)
     {
         try
         {
-            GetRatingsAndReviewsResponse ratingAndReviewResponse = await getRatingsAndReviewsByVisualProductionId.ExecuteAsync(visualProductionId);
+            GetRatingsAndReviewsResponse ratingAndReviewResponse = await useCase.ExecuteAsync(visualProductionId);
             return Ok(ratingAndReviewResponse);
         }
         catch (Exception ex)
@@ -46,11 +42,11 @@ public class RatingsAndReviewsController(
 
     [HttpGet("bestRated")]
     [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
-    public IActionResult GetBestRated()
+    public IActionResult GetBestRated([FromServices] GetBestRatedVisualProduction useCase)
     {
         try
         {
-            GetRatingsAndReviewsResponse bestRatedVisualProduction = getBestRatedVisualProduction.Execute();
+            GetRatingsAndReviewsResponse bestRatedVisualProduction = useCase.Execute();
             return Ok(bestRatedVisualProduction);
         }
         catch (Exception ex)
@@ -61,11 +57,11 @@ public class RatingsAndReviewsController(
 
     [HttpGet("worstRated")]
     [ProducesResponseType(typeof(GetRatingsAndReviewsResponse), StatusCodes.Status200OK)]
-    public IActionResult GetWorstRated()
+    public IActionResult GetWorstRated([FromServices] GetWorstRatedVisualProduction useCase)
     {
         try
         {
-            GetRatingsAndReviewsResponse worstRatedVisualProduction = getWorstRatedVisualProduction.Execute();
+            GetRatingsAndReviewsResponse worstRatedVisualProduction = useCase.Execute();
             return Ok(worstRatedVisualProduction);
         }
         catch (Exception ex)

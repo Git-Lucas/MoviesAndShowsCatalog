@@ -1,15 +1,15 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Application.Events;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;
 
-public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, IEventProcessor eventProcessor) : BackgroundService
+internal class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, EventProcessor eventProcessor) : BackgroundService
 {
     private readonly ILogger<RabbitMQSubscriber> _logger = logger;
     private readonly ConfigRabbitMQ _config = config;
-    private readonly IEventProcessor _eventProcessor = eventProcessor;
+    private readonly EventProcessor _eventProcessor = eventProcessor;
     private readonly string _exchangeName = "VisualProductionExchange";
     private readonly string _queueName = $"{nameof(RatingAndReview)}Queue";
 

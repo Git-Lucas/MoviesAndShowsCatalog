@@ -1,11 +1,10 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
-using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Data;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Application.VisualProductions.Data;
 using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Entities;
 using System.Text.Json;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;
+namespace MoviesAndShowsCatalog.RatingAndReview.Application.Events;
 
-public class EventProcessor : IEventProcessor
+internal class EventProcessor
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<EventProcessor> _logger;
@@ -40,14 +39,14 @@ public class EventProcessor : IEventProcessor
         try
         {
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
-            IVisualProductionData visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionData>();
+            IVisualProductionRepository visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionRepository>();
 
             VisualProduction visualProduction = JsonSerializer.Deserialize<VisualProduction>(message)
                 ?? throw new JsonException("It was not possible to convert the message.");
 
             await visualProductionData.CreateAsync(visualProduction);
 
-            _logger.LogInformation("{EntityName} registered sucessfully. (ID: {VisualProductionId} | DateTime: {DateTimeNow})", 
+            _logger.LogInformation("{EntityName} registered sucessfully. (ID: {VisualProductionId} | DateTime: {DateTimeNow})",
                                    nameof(VisualProduction), visualProduction.Id, DateTime.Now);
         }
         catch (Exception ex)
@@ -61,7 +60,7 @@ public class EventProcessor : IEventProcessor
         try
         {
             using IServiceScope scope = _serviceScopeFactory.CreateScope();
-            IVisualProductionData visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionData>();
+            IVisualProductionRepository visualProductionData = scope.ServiceProvider.GetRequiredService<IVisualProductionRepository>();
 
             int visualProductionId = JsonSerializer.Deserialize<int>(message);
 

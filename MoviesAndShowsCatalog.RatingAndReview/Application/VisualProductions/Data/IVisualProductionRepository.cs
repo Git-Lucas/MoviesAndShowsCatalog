@@ -1,8 +1,8 @@
 ﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Entities;
 
-namespace MoviesAndShowsCatalog.RatingAndReview.Domain.VisualProductions.Data;
+namespace MoviesAndShowsCatalog.RatingAndReview.Application.VisualProductions.Data;
 
-public interface IVisualProductionData
+public interface IVisualProductionRepository
 {
     Task CreateAsync(VisualProduction visualProduction);
     Task<List<VisualProduction>> GetAllAsync();

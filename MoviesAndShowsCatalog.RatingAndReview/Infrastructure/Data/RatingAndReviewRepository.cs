@@ -1,8 +1,8 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.RatingsAndReviews.Data;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Application.RatingsAndReviews.Data;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
 
-public class RatingAndReviewData(DatabaseContext context) : IRatingAndReviewData
+internal class RatingAndReviewRepository(DatabaseContext context) : IRatingAndReviewRepository
 {
     public async Task CreateAsync(Domain.RatingsAndReviews.Entities.RatingAndReview ratingAndReview)
     {
