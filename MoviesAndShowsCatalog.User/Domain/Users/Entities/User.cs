@@ -1,5 +1,4 @@
-﻿using MoviesAndShowsCatalog.User.Domain.Users.DTOs;
-using MoviesAndShowsCatalog.User.Domain.Util.Enums;
+﻿using MoviesAndShowsCatalog.User.Domain.Users.Enums;
 using MoviesAndShowsCatalog.User.Domain.VisualProductions.Enums;
 
 namespace MoviesAndShowsCatalog.User.Domain.Users.Entities;
@@ -24,20 +23,15 @@ public class User
     public void SetGenrePreferences(int[] genreCodes)
     {
         GenrePreferences.Clear();
-
-        foreach (int genreCode in genreCodes)
-        {
-            if (Enum.IsDefined(typeof(Genre), genreCode))
-            {
-                GenrePreferences.Add((Genre)genreCode);
-            }
-        }
+        GenrePreferences.AddRange(genreCodes
+            .Where(genreCode => Enum.IsDefined(typeof(Genre), genreCode))
+            .Select(genreCode => (Genre)genreCode));
     }
 
-    public void Update(CreateOrUpdateUserRequest createOrUpdateUserRequest)
+    public void Update(string username, string password, Role role)
     {
-        Username = createOrUpdateUserRequest.Username;
-        Password = createOrUpdateUserRequest.Password;
-        Role = createOrUpdateUserRequest.Role;
+        Username = username;
+        Password = password;
+        Role = role;
     }
 }

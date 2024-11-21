@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAndShowsCatalog.MovieAndShow.Application.Authentication.Enums;
 using MoviesAndShowsCatalog.MovieAndShow.Application.DTOs;
 using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.DTOs;
 using MoviesAndShowsCatalog.MovieAndShow.Application.VisualProductions.UseCases;
 using MoviesAndShowsCatalog.MovieAndShow.Domain.VisualProductions.Entities;
+using MoviesAndShowsCatalog.MovieAndShow.Web.Authentication.Enums;
 
 namespace MoviesAndShowsCatalog.MovieAndShow.Web.Controllers;
 

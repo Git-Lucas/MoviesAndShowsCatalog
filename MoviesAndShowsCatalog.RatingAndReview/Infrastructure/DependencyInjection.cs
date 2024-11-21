@@ -1,6 +1,6 @@
 ﻿using MoviesAndShowsCatalog.RatingAndReview.Application.RatingsAndReviews.Data;
 using MoviesAndShowsCatalog.RatingAndReview.Application.VisualProductions.Data;
-using MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
+using MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data.Repositories;
 using MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure;
@@ -19,8 +19,8 @@ public static class DependencyInjection
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services
-            .AddScoped<IVisualProductionRepository, VisualProductionRepository>()
-            .AddScoped<IRatingAndReviewRepository, RatingAndReviewRepository>();
+            .AddScoped<IVisualProductionRepository, VisualProductionEf>()
+            .AddScoped<IRatingAndReviewRepository, RatingAndReviewEF>();
 
         return services;
     }

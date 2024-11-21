@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MoviesAndShowsCatalog.MovieAndShow.Application;
-using MoviesAndShowsCatalog.MovieAndShow.Application.Authentication;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure;
 using MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
+using MoviesAndShowsCatalog.MovieAndShow.Web.Authentication;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

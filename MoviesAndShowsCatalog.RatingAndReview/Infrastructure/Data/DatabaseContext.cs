@@ -5,8 +5,8 @@ namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.Data;
 
 public class DatabaseContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<VisualProduction> VisualProductions { get; set; }
-    public DbSet<Domain.RatingsAndReviews.Entities.RatingAndReview> RatingsAndReviews { get; set; }
+    public required DbSet<VisualProduction> VisualProductions { get; set; }
+    public required DbSet<Domain.RatingsAndReviews.Entities.RatingAndReview> RatingsAndReviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
