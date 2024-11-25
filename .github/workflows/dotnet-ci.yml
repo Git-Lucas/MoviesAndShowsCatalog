@@ -1,0 +1,45 @@
+name: .NET CI
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+  
+    - name: Setup Docker Build
+      uses: docker/setup-buildx-action@v3.7.1
+
+    - name: Docker Login
+      uses: docker/login-action@v3.3.0
+      with:
+        username: dockerlucasoliveira
+        password: ${{ secrets.PASSWORD_DOCKERHUB }}
+
+    - name: Build and push MovieAndShow Docker image
+      uses: docker/build-push-action@v6.9.0
+      with:
+        context: ./MoviesAndShowsCatalog.MovieAndShow/
+        file: ./MoviesAndShowsCatalog.MovieAndShow/Dockerfile
+        push: true
+        tags: dockerlucasoliveira/moviesandshowscatalog.movieandshow:latest
+
+    - name: Build and push RatingAndReview Docker image
+      uses: docker/build-push-action@v6.9.0
+      with:
+        context: ./MoviesAndShowsCatalog.RatingAndReview/
+        file: ./MoviesAndShowsCatalog.RatingAndReview/Dockerfile
+        push: true
+        tags: dockerlucasoliveira/moviesandshowscatalog.ratingandreview:latest
+
+    - name: Build and push User Docker image
+      uses: docker/build-push-action@v6.9.0
+      with:
+        context: ./MoviesAndShowsCatalog.User/
+        file: ./MoviesAndShowsCatalog.User/Dockerfile
+        push: true
+        tags: dockerlucasoliveira/moviesandshowscatalog.user:latest
