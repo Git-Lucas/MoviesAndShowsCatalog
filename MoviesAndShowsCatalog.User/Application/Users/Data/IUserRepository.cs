@@ -1,5 +1,4 @@
-﻿using MoviesAndShowsCatalog.User.Application.Users.DTOs;
-using MoviesAndShowsCatalog.User.Domain.VisualProductions.Enums;
+﻿using MoviesAndShowsCatalog.User.Domain.VisualProductions.Enums;
 
 namespace MoviesAndShowsCatalog.User.Application.Users.Data;
 
@@ -13,4 +12,5 @@ public interface IUserRepository
     Task DeleteAsync(int idUser);
 
     Task<Domain.Users.Entities.User?> Login(string username, string password);
+    Task<bool> UsernameExists(string username);
 }

@@ -1,9 +1,7 @@
-version: '3.4'
-
 services:
   user-service:
     container_name: UserService
-    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.user:1.0
+    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.user:latest
     build:
         context: .
         dockerfile: MoviesAndShowsCatalog.User/Dockerfile
@@ -24,7 +22,7 @@ services:
 
   movie-and-show-service:
     container_name: MovieAndShowService
-    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.movieandshow:1.0
+    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.movieandshow:latest
     build:
         context: .
         dockerfile: MoviesAndShowsCatalog.MovieAndShow/Dockerfile
@@ -47,7 +45,7 @@ services:
 
   rating-and-review-service:
     container_name: RatingAndReviewService
-    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.ratingandreview:1.0
+    image: ${DOCKER_REGISTRY-}dockerlucasoliveira/moviesandshowscatalog.ratingandreview:latest
     build:
         context: .
         dockerfile: MoviesAndShowsCatalog.RatingAndReview/Dockerfile
