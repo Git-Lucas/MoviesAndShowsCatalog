@@ -80,4 +80,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/", () =>
+{
+    return Results.Ok("REST MovieAndShow MicroService Running");
+});
+
 await app.RunAsync();

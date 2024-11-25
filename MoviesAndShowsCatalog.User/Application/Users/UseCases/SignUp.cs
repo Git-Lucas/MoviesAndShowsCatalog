@@ -9,9 +9,7 @@ public class SignUp(IUserRepository repository)
 
     public async Task<int> ExecuteAsync(SignUpRequest registerRequest)
     {
-        Domain.Users.Entities.User? userAlreadyExistsInDatabase = await _repository.Login(registerRequest.Username, registerRequest.Password);
-        
-        if (userAlreadyExistsInDatabase is not null)
+        if (await _repository.UsernameExists(registerRequest.Username))
         {
             throw new InvalidOperationException("The user has already been register.");
         }
