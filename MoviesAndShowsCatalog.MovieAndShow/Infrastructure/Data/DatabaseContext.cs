@@ -5,5 +5,5 @@ namespace MoviesAndShowsCatalog.MovieAndShow.Infrastructure.Data;
 
 public class DatabaseContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<VisualProduction> VisualProductions { get; set; }
+    public required DbSet<VisualProduction> VisualProductions { get; set; }
 }

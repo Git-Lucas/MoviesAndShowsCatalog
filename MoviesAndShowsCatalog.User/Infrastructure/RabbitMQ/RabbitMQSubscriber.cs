@@ -1,24 +1,26 @@
-﻿using MoviesAndShowsCatalog.User.Domain.RabbitMQ;
+﻿using MoviesAndShowsCatalog.User.Application.Events;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
 namespace MoviesAndShowsCatalog.User.Infrastructure.RabbitMQ;
 
-public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, IEventProcessor eventProcessor) : BackgroundService
+public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, EventProcessor eventProcessor) : BackgroundService
 {
     private readonly ILogger<RabbitMQSubscriber> _logger = logger;
     private readonly ConfigRabbitMQ _config = config;
-    private readonly IEventProcessor _eventProcessor = eventProcessor;
+    private readonly EventProcessor _eventProcessor = eventProcessor;
     private readonly string _exchangeName = "VisualProductionExchange";
     private readonly string _queueName = $"{nameof(User)}Queue";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        IChannel channel = await _config.CreateChannelAsync();
+        IChannel channel;
 
         try
         {
+            channel = await _config.CreateChannelAsync();
+
             await channel.ExchangeDeclareAsync(exchange: _exchangeName,
                                                 type: ExchangeType.Topic,
                                                 durable: true,
@@ -64,6 +66,7 @@ public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbit
 
         await channel.BasicConsumeAsync(queue: _queueName,
                                         autoAck: false,
-                                        consumer: consumer);
+                                        consumer: consumer,
+                                        cancellationToken: CancellationToken.None);
     }
 }

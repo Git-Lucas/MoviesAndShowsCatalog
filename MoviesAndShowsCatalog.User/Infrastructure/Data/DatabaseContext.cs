@@ -6,8 +6,8 @@ namespace MoviesAndShowsCatalog.User.Infrastructure.Data;
 
 public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
 {
-    public DbSet<Domain.Users.Entities.User> Users { get; set; }
-    public DbSet<Notification> Notifications { get; set; }
+    public required DbSet<Domain.Users.Entities.User> Users { get; set; }
+    public required DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -17,7 +17,6 @@ public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbCont
                 x => string.Join(",", x),
                 x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)
                     .Select(x => Enum.Parse<Genre>(x))
-                    .Cast<Genre>()
                     .ToList()
                 );
     }

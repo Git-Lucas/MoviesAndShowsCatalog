@@ -1,44 +1,46 @@
-﻿using MoviesAndShowsCatalog.RatingAndReview.Domain.RabbitMQ;
+﻿using MoviesAndShowsCatalog.RatingAndReview.Application.Events;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
 namespace MoviesAndShowsCatalog.RatingAndReview.Infrastructure.RabbitMQ;
 
-public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, IEventProcessor eventProcessor) : BackgroundService
+internal class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbitMQ config, EventProcessor eventProcessor) : BackgroundService
 {
     private readonly ILogger<RabbitMQSubscriber> _logger = logger;
     private readonly ConfigRabbitMQ _config = config;
-    private readonly IEventProcessor _eventProcessor = eventProcessor;
+    private readonly EventProcessor _eventProcessor = eventProcessor;
     private readonly string _exchangeName = "VisualProductionExchange";
     private readonly string _queueName = $"{nameof(RatingAndReview)}Queue";
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        IChannel _channel = await _config.CreateChannelAsync();
+        IChannel channel;
 
         try
         {
-            await _channel.ExchangeDeclareAsync(exchange: _exchangeName,
+            channel = await _config.CreateChannelAsync();
+
+            await channel.ExchangeDeclareAsync(exchange: _exchangeName,
                                                 type: ExchangeType.Topic,
                                                 durable: true,
                                                 autoDelete: false,
                                                 arguments: null,
                                                 cancellationToken: CancellationToken.None);
 
-            await _channel.QueueDeclareAsync(queue: _queueName,
+            await channel.QueueDeclareAsync(queue: _queueName,
                                              durable: true,
                                              exclusive: false,
                                              autoDelete: false,
                                              arguments: null,
                                              cancellationToken: CancellationToken.None);
 
-            await _channel.QueueBindAsync(queue: _queueName,
+            await channel.QueueBindAsync(queue: _queueName,
                                           exchange: _exchangeName,
                                           routingKey: "Created",
                                           cancellationToken: CancellationToken.None);
 
-            await _channel.QueueBindAsync(queue: _queueName,
+            await channel.QueueBindAsync(queue: _queueName,
                                           exchange: _exchangeName,
                                           routingKey: "Deleted",
                                           cancellationToken: CancellationToken.None);
@@ -48,7 +50,7 @@ public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbit
             throw new InvalidOperationException($"Unable to define initial RabbitMQ settings. Error: {ex.Message}", ex);
         }
 
-        AsyncEventingBasicConsumer consumer = new(_channel);
+        AsyncEventingBasicConsumer consumer = new(channel);
         consumer.ReceivedAsync += async (ModuleHandle, ea) =>
         {
             byte[] body = ea.Body.ToArray();
@@ -57,8 +59,8 @@ public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbit
             try
             {
                 _eventProcessor.ProcessAsync(ea.RoutingKey, message);
-            
-                await _channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
+
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -66,8 +68,9 @@ public class RabbitMQSubscriber(ILogger<RabbitMQSubscriber> logger, ConfigRabbit
             }
         };
 
-        await _channel.BasicConsumeAsync(queue: _queueName,
-                                         autoAck: false,
-                                         consumer: consumer);
+        await channel.BasicConsumeAsync(queue: _queueName,
+                                        autoAck: false,
+                                        consumer: consumer,
+                                        cancellationToken: CancellationToken.None);
     }
 }
