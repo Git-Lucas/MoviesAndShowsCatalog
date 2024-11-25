@@ -1,7 +1,7 @@
-name: .NET CI
+name: .NET CD
 
 on:
-  pull_request:
+  push:
     branches: [ "master" ]
 
 jobs:
