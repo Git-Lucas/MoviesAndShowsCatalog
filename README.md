@@ -2,89 +2,91 @@
 <table>
 <tr>
 <td>
-  O projeto se refere ao desenho e implementação do back-end de uma aplicação de catálogos de filmes e séries baseada em microsserviços, que provê APIs	de cada microsserviço para gerenciamento dos dados (documentado utilizando o Swagger). Tecnologias utilizadas: C#, .NET 8, ASP.NET API, Authentication Jwt Bearer, Entity Framework, SQL Server, PostgreSQL, MySql, Docker, Clean Architecture, Hexagonal Architecture.
+  O projeto se refere ao desenho e implementaÃ§Ã£o do back-end de uma aplicaÃ§Ã£o de catÃ¡logos de filmes e sÃ©ries baseada em microsserviÃ§os, onde Ã© possÃ­vel usuÃ¡rios autenticados classificarem e comentarem filmes e sÃ©ries jÃ¡ vistos, assim como receber notificaÃ§Ã£o com base em seus gÃªneros marcados como preferidos, a cada lanÃ§amento de filme ou sÃ©rie na plataforma. Esta aplicaÃ§Ã£o provÃª as APIs	de cada microsserviÃ§o para gerenciamento dos dados (documentado utilizando o Swagger). Tecnologias utilizadas: C#, .NET 8, ASP.NET API, Authentication Jwt Bearer, Entity Framework, SQL Server, PostgreSQL, MySql, RabbitMQ, Docker, Clean Architecture, Hexagonal Architecture.
 </td>
 </tr>
 </table>
 
 
 ## Getting Started
-1. Para criar e iniciar os contêiners necessários à aplicação, na raiz da aplicação (local onde o 'docker-compose.yml' está localizado), rode:
+1. Para criar e iniciar os contÃªiners necessÃ¡rios Ã  aplicaÃ§Ã£o, na raiz da aplicaÃ§Ã£o (local onde o 'docker-compose.yml' estÃ¡ localizado), rode:
    ```bash
    docker-compose up
    ```
-![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/docker-compose.png)
-![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/docker-compose1.png)
-2. Acesse o microsserviço de 'User' em "http://localhost:8080/swagger";
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/docker-compose.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/docker-compose1.png)
 
-3. Acesse o microsserviço de 'MovieAndShow' em "http://localhost:8081/swagger";
+2. Acesse o microsserviÃ§o de 'User' em "http://localhost:8080/swagger";
 
-4. Acesse o microsserviço de 'RatingAndReview' em "http://localhost:8082/swagger";
+3. Acesse o microsserviÃ§o de 'MovieAndShow' em "http://localhost:8081/swagger";
 
-5. O primeiro microsserviço que deve ser acessado é o de 'User', que possui os seguintes usuários iniciais para teste:
+4. Acesse o microsserviÃ§o de 'RatingAndReview' em "http://localhost:8082/swagger";
+
+5. O primeiro microsserviÃ§o que deve ser acessado Ã© o de 'User', que possui os seguintes usuÃ¡rios iniciais para teste:
 	- Username: "administrador"; Password: "000"; Role: "Administrator";
 	- Username: "lucas"; Password: "111"; Role: "Commom";
-	- Username: "joão"; Password: "222"; Role: "Commom";
+	- Username: "joÃ£o"; Password: "222"; Role: "Commom";
 	- Username: "maria"; Password: "333"; Role: "Commom";
 	- Username: "carlos"; Password: "444"; Role: "Commom";
-	![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/Token.png)
-	![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/Token1.png)
+	![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/Token.png)
+	![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/Token1.png)
 
 
-# Aplicação
-## Microsserviço de gerenciamento de usuários
-Aplicação (com banco de dados MySql) responsável por expor os seguintes casos de uso:
-- Registro de usuário; 
-- Autenticação e autorização;
-- Definir e visualizar os gêneros favoritos. Ex.: 'Action', 'Comedy', 'Drama', etc. (Os usuários iniciais 'Commom' informados acima, já possuem uma primeira definição de gêneros favoritos);
-- Visualizar as notificações recebidas (a cada filme ou série, com o gênero marcado como favorito, o usuário recebe uma notificação);
+# AplicaÃ§Ã£o
+## MicrosserviÃ§o de gerenciamento de usuÃ¡rios
+AplicaÃ§Ã£o (com banco de dados MySql) responsÃ¡vel por expor os seguintes casos de uso:
+- Registro de usuÃ¡rio; 
+- AutenticaÃ§Ã£o e autorizaÃ§Ã£o;
+- Definir e visualizar os gÃªneros favoritos. Ex.: 'Action', 'Comedy', 'Drama', etc. (Os usuÃ¡rios iniciais 'Commom' informados acima, jÃ¡ possuem uma primeira definiÃ§Ã£o de gÃªneros favoritos);
+- Visualizar as notificaÃ§Ãµes recebidas (a cada filme ou sÃ©rie, com o gÃªnero marcado como favorito, o usuÃ¡rio recebe uma notificaÃ§Ã£o);
 
-Para usuários administradores, existem os seguintes casos de uso:
-- Cadastrar um novo usuário (aqui seria possível criar um novo usuário administrador);
-- Visualizar todos os usuários cadastrados no banco de dados;
-- Editar um usuário;
-- Excluir um usuário;
+Para usuÃ¡rios administradores, existem os seguintes casos de uso:
+- Cadastrar um novo usuÃ¡rio (aqui seria possÃ­vel criar um novo usuÃ¡rio administrador);
+- Visualizar todos os usuÃ¡rios cadastrados no banco de dados;
+- Editar um usuÃ¡rio;
+- Excluir um usuÃ¡rio;
 
-![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/User.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/User.png)
 
-## Microsserviço de filmes e séries
-Aplicação (com banco de dados SQL Server) responsável por expor os seguintes casos de uso:
-- Visualizar os gêneros suportados pela aplicação (com o objetivo de facilitar o entendimento de qual gênero o código retornado nas respostas dos endpoints se refere);
-- Cadastrar um novo filme ou série (nesta ação, as outras 2 aplicações são notificadas para suas devidas ações correspondentes: a aplicação de 'User' envia notificação para os usuários interessados no gênero que existe novidade na plataforma; e a aplicação de 'RatingAndReview', cadastra este filme ou série em seu banco de dados, a fim de garantir autossuficiência de dados para cada aplicação);
-- Visualizar os filmes ou séries cadastrados no banco de dados (consulta paginada);
-![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/MovieAndShowPaginated.png)
-- Visualizar um filme ou série específico;
-- Excluir um filme ou série específico (esta ação também dispara uma mensagem no RabbitMQ para que este filme ou série também seja excluído no banco de dados de 'RatingAndReview');
+## MicrosserviÃ§o de filmes e sÃ©ries
+AplicaÃ§Ã£o (com banco de dados SQL Server) responsÃ¡vel por expor os seguintes casos de uso:
+- Visualizar os gÃªneros suportados pela aplicaÃ§Ã£o (com o objetivo de facilitar o entendimento de qual gÃªnero o cÃ³digo retornado nas respostas dos endpoints se refere);
+- Cadastrar um novo filme ou sÃ©rie (nesta aÃ§Ã£o, as outras 2 aplicaÃ§Ãµes sÃ£o notificadas para suas devidas aÃ§Ãµes correspondentes: a aplicaÃ§Ã£o de 'User' envia notificaÃ§Ã£o para os usuÃ¡rios interessados no gÃªnero que existe novidade na plataforma; e a aplicaÃ§Ã£o de 'RatingAndReview', cadastra este filme ou sÃ©rie em seu banco de dados, a fim de garantir autossuficiÃªncia de dados para cada aplicaÃ§Ã£o);
+- Visualizar os filmes ou sÃ©ries cadastrados no banco de dados (consulta paginada);
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/MovieAndShowPaginated.png)
+- Visualizar um filme ou sÃ©rie especÃ­fico;
+- Excluir um filme ou sÃ©rie especÃ­fico (esta aÃ§Ã£o tambÃ©m dispara uma mensagem no RabbitMQ para que este filme ou sÃ©rie tambÃ©m seja excluÃ­do no banco de dados de 'RatingAndReview');
 
-![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/MovieAndShow.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/MovieAndShow.png)
 
-## Microsserviço de classificações e comentários
-Aplicação (com banco de dados Postgre) responsável por expor os seguintes casos de uso:
-- Classificar e comentar um filme ou série visto (classificação de 1 a 5);
-- Visualizar todas as classificações e comentários de um determinado filme (esta ação retorna também a média de avaliações do filme ou série);
-![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/RatingsAndReviewsByVisualProduction.png)
-- Visualizar as classificações e comentários do melhor e pior classificado filme ou série;
-- Visualizar todos os filmes ou séries cadastrados no banco de dados (recupera os filmes ou séries do banco de dados próprio - se a aplicação de filmes ou séries estiver indisponível, continua sendo possível acessar todas as funcionalidades de 'RatingAndReview');
+## MicrosserviÃ§o de classificaÃ§Ãµes e comentÃ¡rios
+AplicaÃ§Ã£o (com banco de dados Postgre) responsÃ¡vel por expor os seguintes casos de uso:
+- Classificar e comentar um filme ou sÃ©rie visto (classificaÃ§Ã£o de 1 a 5);
+- Visualizar todas as classificaÃ§Ãµes e comentÃ¡rios de um determinado filme (esta aÃ§Ã£o retorna tambÃ©m a mÃ©dia de avaliaÃ§Ãµes do filme ou sÃ©rie);
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/RatingsAndReviewsByVisualProduction.png)
+- Visualizar as classificaÃ§Ãµes e comentÃ¡rios do melhor e pior classificado filme ou sÃ©rie;
+- Visualizar todos os filmes ou sÃ©ries cadastrados no banco de dados (recupera os filmes ou sÃ©ries do banco de dados prÃ³prio - se a aplicaÃ§Ã£o de filmes ou sÃ©ries estiver indisponÃ­vel, continua sendo possÃ­vel acessar todas as funcionalidades de 'RatingAndReview');
 
-![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/RatingAndReview.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/RatingAndReview.png)
 
 ## RabbitMQ
-A comunicação entre os microsserviços é realizada de forma assíncrona, pelo servidor de mensageria 'RabbitMQ'.
+A comunicaÃ§Ã£o entre os microsserviÃ§os Ã© realizada de forma assÃ­ncrona, pelo servidor de mensageria 'RabbitMQ'.
 
-![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/RabbitMQ.png)
+![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/master/imgs/RabbitMQ.png)
 
-## Segurança
 
-Camadas de segurança implementadas:
+## SeguranÃ§a
 
-- **Autenticação e autorização via token Bearer**  
-  A autenticação é baseada em JWT (JSON Web Token), gerado pelo microsserviço `User`, e validado em cada requisição protegida.
+Camadas de seguranï¿½a implementadas:
+
+- **Autenticaï¿½ï¿½o e autorizaï¿½ï¿½o via token Bearer**  
+  A autenticaï¿½ï¿½o ï¿½ baseada em JWT (JSON Web Token), gerado pelo microsserviï¿½o `User`, e validado em cada requisiï¿½ï¿½o protegida.
 
 - **Hashing seguro de senhas**  
-  Senhas são armazenadas no banco de dados usando o algoritmo de hashing com salt via `PasswordHasher<TUser>` do ASP.NET Core Identity, protegendo contra ataques de vazamento de credenciais.
+  Senhas sï¿½o armazenadas no banco de dados usando o algoritmo de hashing com salt via `PasswordHasher<TUser>` do ASP.NET Core Identity, protegendo contra ataques de vazamento de credenciais.
 
 - **Rate limiting por IP**  
-  A rota de login (`SignIn`) possui limitação de requisições (Rate Limiting) configurada para evitar ataques de força bruta. Um IP pode tentar no máximo 5 logins por minuto, retornando erro `429 Too Many Requests` após o limite.
+  A rota de login (`SignIn`) possui limitaï¿½ï¿½o de requisiï¿½ï¿½es (Rate Limiting) configurada para evitar ataques de forï¿½a bruta. Um IP pode tentar no mï¿½ximo 5 logins por minuto, retornando erro `429 Too Many Requests` apï¿½s o limite.
 
-- **Tratamento de logs com proteção de dados sensíveis**  
-  Logs foram configurados para incluir o IP do solicitante e o motivo da falha na rota de autenticação, sem expor senhas, tokens ou detalhes técnicos.
+- **Tratamento de logs com proteï¿½ï¿½o de dados sensï¿½veis**  
+  Logs foram configurados para incluir o IP do solicitante e o motivo da falha na rota de autenticaï¿½ï¿½o, sem expor senhas, tokens ou detalhes tï¿½cnicos.
