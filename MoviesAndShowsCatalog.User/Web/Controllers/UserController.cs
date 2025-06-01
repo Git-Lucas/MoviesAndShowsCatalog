@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using MoviesAndShowsCatalog.User.Application.Authentication;
 using MoviesAndShowsCatalog.User.Application.Users.UseCases;
 
@@ -19,12 +20,22 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("signIn")]
+    [EnableRateLimiting("SignInPolicy")]
     [ProducesResponseType(typeof(SignInResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public async Task<IActionResult> SignIn([FromServices] SignIn useCase, [FromBody] SignInRequest user)
     {
-        SignInResponse loginResponse = await useCase.ExecuteAsync(user);
+        try
+        {
+            SignInResponse loginResponse = await useCase.ExecuteAsync(user);
 
-        return Ok(loginResponse);
+            return Ok(loginResponse);
+        }
+        catch (Exception ex)
+        {
+            return Unauthorized(ex.Message);
+        }
     }
 
     [HttpGet("notifications")]

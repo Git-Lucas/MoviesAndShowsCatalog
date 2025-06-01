@@ -7,8 +7,38 @@ using MoviesAndShowsCatalog.User.Application.Authentication;
 using MoviesAndShowsCatalog.User.Infrastructure;
 using MoviesAndShowsCatalog.User.Infrastructure.Data;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("SignInPolicy", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.Headers.RetryAfter = "60";
+        context.HttpContext.Response.ContentType = "application/json";
+
+        var message = new
+        {
+            error = "Too many requests. Please try again later.",
+        };
+
+        await context.HttpContext.Response.WriteAsJsonAsync(message, cancellationToken: token);
+    };
+});
+
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -68,6 +98,8 @@ builder.Services
     .AddApplicationServices();
 
 var app = builder.Build();
+
+app.UseRateLimiter();
 
 IServiceScope scope = app.Services.CreateScope();
 DatabaseContext databaseContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
