@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MoviesAndShowsCatalog.User.Application.Users;
 using MoviesAndShowsCatalog.User.Domain.Notifications.Entities;
+using MoviesAndShowsCatalog.User.Domain.Users.Enums;
 using MoviesAndShowsCatalog.User.Domain.VisualProductions.Enums;
 
 namespace MoviesAndShowsCatalog.User.Infrastructure.Data;

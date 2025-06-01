@@ -34,4 +34,9 @@ public class User
         Password = password;
         Role = role;
     }
+
+    public void HashPassword(string hashedPassword)
+    {
+        Password = hashedPassword;
+    }
 }

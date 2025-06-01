@@ -10,15 +10,27 @@ public class SignIn(IUserRepository repository, TokenService tokenService)
 
     public async Task<SignInResponse> ExecuteAsync(SignInRequest user)
     {
-        Domain.Users.Entities.User userFromDatabase = await _repository.Login(user.Username, user.Password)
-            ?? throw new InvalidOperationException("User not found in database.");
+        try
+        {
+            Domain.Users.Entities.User userFromDatabase = await _repository.Login(user.Username)
+                ?? throw new InvalidOperationException();
 
-        SignInResponse loginResponse = new(
-            userFromDatabase.Id,
-            userFromDatabase.Username,
-            _tokenService.GenerateToken(userFromDatabase));
+            if (!PasswordHasher.VerifyPassword(userFromDatabase, user.Password))
+            {
+                throw new InvalidOperationException();
+            }
 
-        return loginResponse;
+            SignInResponse loginResponse = new(
+                userFromDatabase.Id,
+                userFromDatabase.Username,
+                _tokenService.GenerateToken(userFromDatabase));
+
+            return loginResponse;
+        }
+        catch (Exception)
+        {
+            throw new InvalidOperationException("Invalid username or password.");
+        }
     }
 }
 

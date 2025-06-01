@@ -1,5 +1,3 @@
-version: '3.4'
-
 services:
   db-rating-and-review:
     container_name: RatingAndReviewPostgre
@@ -9,3 +7,11 @@ services:
     environment:
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: root
+
+  # rabbitmq:
+  #   container_name: MoviesAndShowsCatalogRabbitMQ
+  #   image: rabbitmq:3-management   
+  #   hostname: RabbitMQ
+  #   ports: 
+  #       - 5672:5672
+  #       - 15672:15672
