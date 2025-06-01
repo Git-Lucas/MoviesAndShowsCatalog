@@ -74,4 +74,17 @@ A comunicação entre os microsserviços é realizada de forma assíncrona, pelo serv
 ![](https://github.com/Git-Lucas/MoviesAndShowsCatalog/blob/develop/imgs/RabbitMQ.png)
 
 ## Segurança
-Os microsserviços possuem segurança de autenticação e autorização baseada em token Bearer (gerado pelo microsserviço de 'User').
+
+Camadas de segurança implementadas:
+
+- **Autenticação e autorização via token Bearer**  
+  A autenticação é baseada em JWT (JSON Web Token), gerado pelo microsserviço `User`, e validado em cada requisição protegida.
+
+- **Hashing seguro de senhas**  
+  Senhas são armazenadas no banco de dados usando o algoritmo de hashing com salt via `PasswordHasher<TUser>` do ASP.NET Core Identity, protegendo contra ataques de vazamento de credenciais.
+
+- **Rate limiting por IP**  
+  A rota de login (`SignIn`) possui limitação de requisições (Rate Limiting) configurada para evitar ataques de força bruta. Um IP pode tentar no máximo 5 logins por minuto, retornando erro `429 Too Many Requests` após o limite.
+
+- **Tratamento de logs com proteção de dados sensíveis**  
+  Logs foram configurados para incluir o IP do solicitante e motivo da falha na rota de autenticação.
