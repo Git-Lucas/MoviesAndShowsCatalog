@@ -87,4 +87,4 @@ Camadas de segurança implementadas:
   A rota de login (`SignIn`) possui limitação de requisições (Rate Limiting) configurada para evitar ataques de força bruta. Um IP pode tentar no máximo 5 logins por minuto, retornando erro `429 Too Many Requests` após o limite.
 
 - **Tratamento de logs com proteção de dados sensíveis**  
-  Logs foram configurados para incluir o IP do solicitante e motivo da falha na rota de autenticação.
+  Logs foram configurados para incluir o IP do solicitante e o motivo da falha na rota de autenticação, sem expor senhas, tokens ou detalhes técnicos.
