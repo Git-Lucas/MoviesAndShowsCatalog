@@ -11,6 +11,7 @@ public static class DependencyInjection
     {
         services
             .AddSingleton<EventProcessor>()
+            .AddHttpContextAccessor()
             .AddServices()
             .AddUseCases();
 

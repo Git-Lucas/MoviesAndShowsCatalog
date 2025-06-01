@@ -3,22 +3,45 @@ using MoviesAndShowsCatalog.User.Application.Users.Data;
 
 namespace MoviesAndShowsCatalog.User.Application.Users.UseCases;
 
-public class SignIn(IUserRepository repository, TokenService tokenService)
+public class SignIn(IUserRepository repository, TokenService tokenService, IHttpContextAccessor httpContextAccessor, ILogger<SignIn> logger)
 {
     private readonly IUserRepository _repository = repository;
     private readonly TokenService _tokenService = tokenService;
+    private readonly IHttpContextAccessor _httpContextAcessor = httpContextAccessor;
+    private readonly ILogger<SignIn> _logger = logger;
 
     public async Task<SignInResponse> ExecuteAsync(SignInRequest user)
     {
-        Domain.Users.Entities.User userFromDatabase = await _repository.Login(user.Username, user.Password)
-            ?? throw new InvalidOperationException("User not found in database.");
+        _logger.LogInformation("SignIn attempt. Username: {Username}, Timestamp: {TimestampUtc}",
+            user.Username, DateTime.UtcNow);
 
-        SignInResponse loginResponse = new(
-            userFromDatabase.Id,
-            userFromDatabase.Username,
-            _tokenService.GenerateToken(userFromDatabase));
+        try
+        {
+            Domain.Users.Entities.User userFromDatabase = await _repository.Login(user.Username)
+                ?? throw new InvalidOperationException();
 
-        return loginResponse;
+            if (!PasswordHasher.VerifyPassword(userFromDatabase, user.Password))
+            {
+                throw new InvalidOperationException();
+            }
+
+            SignInResponse loginResponse = new(
+                userFromDatabase.Id,
+                userFromDatabase.Username,
+                _tokenService.GenerateToken(userFromDatabase));
+
+            return loginResponse;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex,
+                "Failed SignIn attempt. Username: {Username}, IP: {IpAddress}, Timestamp: {TimestampUtc}",
+                user.Username,
+                _httpContextAcessor.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
+                DateTime.UtcNow);
+
+            throw new InvalidOperationException("Invalid username or password.");
+        }
     }
 }
 

@@ -52,9 +52,9 @@ internal class UserEF(DatabaseContext context) : IUserRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task<Domain.Users.Entities.User?> Login(string username, string password)
+    public async Task<Domain.Users.Entities.User?> Login(string username)
     {
-        return await context.Users.FirstOrDefaultAsync(x => x.Username == username && x.Password == password);
+        return await context.Users.FirstOrDefaultAsync(x => x.Username == username);
     }
 
     public async Task<bool> UsernameExists(string username)

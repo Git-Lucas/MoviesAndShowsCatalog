@@ -11,6 +11,6 @@ public interface IUserRepository
     Task UpdateAsync(Domain.Users.Entities.User user);
     Task DeleteAsync(int idUser);
 
-    Task<Domain.Users.Entities.User?> Login(string username, string password);
+    Task<Domain.Users.Entities.User?> Login(string username);
     Task<bool> UsernameExists(string username);
 }

@@ -19,6 +19,8 @@ public class SignUp(IUserRepository repository)
                 password: registerRequest.Password,
                 role: Role.Commom
             );
+
+        user.HashPassword(PasswordHasher.HashPassword(user));
         
         int createdUserId = await _repository.CreateAsync(user);
 

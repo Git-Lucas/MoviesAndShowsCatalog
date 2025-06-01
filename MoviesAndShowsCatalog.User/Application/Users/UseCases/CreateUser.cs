@@ -9,13 +9,15 @@ public class CreateUser(IUserRepository repository)
 
     public async Task<int> ExecuteAsync(CreateOrUpdateUserRequest dtoRequest)
     {
-        Domain.Users.Entities.User? userAlreadyExistsInDatabase = await _repository.Login(dtoRequest.Username, dtoRequest.Password);
+        Domain.Users.Entities.User? userAlreadyExistsInDatabase = await _repository.Login(dtoRequest.Username);
         if (userAlreadyExistsInDatabase is not null)
         {
             throw new InvalidOperationException("The user has already been register.");
         }
 
         Domain.Users.Entities.User userEntity = dtoRequest.ToEntity();
+
+        userEntity.HashPassword(PasswordHasher.HashPassword(userEntity));
 
         int createdUserId = await _repository.CreateAsync(userEntity);
 
