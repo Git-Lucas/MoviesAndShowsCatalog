@@ -3,13 +3,18 @@ using MoviesAndShowsCatalog.User.Application.Users.Data;
 
 namespace MoviesAndShowsCatalog.User.Application.Users.UseCases;
 
-public class SignIn(IUserRepository repository, TokenService tokenService)
+public class SignIn(IUserRepository repository, TokenService tokenService, IHttpContextAccessor httpContextAccessor, ILogger<SignIn> logger)
 {
     private readonly IUserRepository _repository = repository;
     private readonly TokenService _tokenService = tokenService;
+    private readonly IHttpContextAccessor _httpContextAcessor = httpContextAccessor;
+    private readonly ILogger<SignIn> _logger = logger;
 
     public async Task<SignInResponse> ExecuteAsync(SignInRequest user)
     {
+        _logger.LogInformation("SignIn attempt. Username: {Username}, Timestamp: {TimestampUtc}",
+            user.Username, DateTime.UtcNow);
+
         try
         {
             Domain.Users.Entities.User userFromDatabase = await _repository.Login(user.Username)
@@ -27,8 +32,14 @@ public class SignIn(IUserRepository repository, TokenService tokenService)
 
             return loginResponse;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogWarning(ex,
+                "Failed SignIn attempt. Username: {Username}, IP: {IpAddress}, Timestamp: {TimestampUtc}",
+                user.Username,
+                _httpContextAcessor.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
+                DateTime.UtcNow);
+
             throw new InvalidOperationException("Invalid username or password.");
         }
     }
