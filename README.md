@@ -1,4 +1,4 @@
-# MoviesAndShowsCatalog
+﻿# MoviesAndShowsCatalog
 <table>
 <tr>
 <td>
@@ -77,16 +77,16 @@ A comunicação entre os microsserviços é realizada de forma assíncrona, pelo
 
 ## Segurança
 
-Camadas de seguran�a implementadas:
+Camadas de segurança implementadas:
 
-- **Autentica��o e autoriza��o via token Bearer**  
-  A autentica��o � baseada em JWT (JSON Web Token), gerado pelo microsservi�o `User`, e validado em cada requisi��o protegida.
+- **Autenticação e autorização via token Bearer**  
+  A autenticação é baseada em JWT (JSON Web Token), gerado pelo microsserviço `User`, e validado em cada requisição protegida.
 
 - **Hashing seguro de senhas**  
-  Senhas s�o armazenadas no banco de dados usando o algoritmo de hashing com salt via `PasswordHasher<TUser>` do ASP.NET Core Identity, protegendo contra ataques de vazamento de credenciais.
+  Senhas são armazenadas no banco de dados usando o algoritmo de hashing com salt via `PasswordHasher<TUser>` do ASP.NET Core Identity, protegendo contra ataques de vazamento de credenciais.
 
 - **Rate limiting por IP**  
-  A rota de login (`SignIn`) possui limita��o de requisi��es (Rate Limiting) configurada para evitar ataques de for�a bruta. Um IP pode tentar no m�ximo 5 logins por minuto, retornando erro `429 Too Many Requests` ap�s o limite.
+  A rota de login (`SignIn`) possui limitação de requisições (Rate Limiting) configurada para evitar ataques de força bruta. Um IP pode tentar no máximo 5 logins por minuto, retornando erro `429 Too Many Requests` após o limite.
 
-- **Tratamento de logs com prote��o de dados sens�veis**  
-  Logs foram configurados para incluir o IP do solicitante e o motivo da falha na rota de autentica��o, sem expor senhas, tokens ou detalhes t�cnicos.
+- **Tratamento de logs com proteção de dados sensíveis**  
+  Logs foram configurados para incluir o IP do solicitante e o motivo da falha na rota de autenticação, sem expor senhas, tokens ou detalhes técnicos.
