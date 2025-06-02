@@ -9,9 +9,9 @@ public class TokenService
 {
     public string GenerateToken(Domain.Users.Entities.User user)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(Settings.Secret);
-        var tokenDescriptor = new SecurityTokenDescriptor
+        JwtSecurityTokenHandler tokenHandler = new();
+        byte[] key = Encoding.ASCII.GetBytes(Settings.Secret);
+        SecurityTokenDescriptor tokenDescriptor = new()
         {
             Subject = new ClaimsIdentity(
             [
@@ -22,7 +22,7 @@ public class TokenService
             Expires = DateTime.UtcNow.AddHours(2),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
+        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);
     }

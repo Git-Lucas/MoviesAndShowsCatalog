@@ -52,4 +52,3 @@ public record SignInRequest(string Username, string Password)
 public record SignInResponse(int Id, string Username, string Token)
 {
 }
-
